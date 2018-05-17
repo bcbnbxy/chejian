@@ -63,7 +63,7 @@ export default{
 					})
 			     }else{
 			     	this.$message({
-				          message: r.errMessage,
+				          message: r.errorMessage,
 				          type: 'error'
 				        });
 			     }
@@ -121,7 +121,7 @@ export default{
 	.phonenum>p{
 		flex:0 0 auto;
 		border-right:1px solid #dedede;
-		font-size:8px;
+		font-size:16px;
 		color:#263a55;
 	}
 	.phonenum>p>i{

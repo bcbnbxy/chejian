@@ -6,10 +6,10 @@
 		<input type="password" placeholder="6~20位数字、字母或字符" v-model="password"/>
 	</div>
 	<div class="setpassword-sure">
-		<label>设置密码</label>
+		<label>确认密码</label>
 		<input type="password" placeholder="请再次输入密码" v-model="passwordsure"/>
 	</div>
-	<el-button type="info"  style="margin-top:35px;" @click="gochoosearea">下一步</el-button>
+	<el-button  type="info"  style="margin-top:35px;" @click="gochoosearea">下一步</el-button>
 </div>
 </template>
 

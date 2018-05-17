@@ -12,7 +12,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
     	'/customer': {
-	      target: '192.168.31.80:8080',  // 生产环境服务器
+	      target: 'http://192.168.31.193:8080',  // 生产环境服务器
 	      changeOrigin: true
     	}
     },
