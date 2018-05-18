@@ -12,7 +12,8 @@ const regExs = {
   email: /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/,  // 邮件
   name: /^[a-zA-Z\u4e00-\u9fa5]{2,16}$/,  // 中文名
   password:/^[\x21-\x7E]{6,20}$/,  // 密码
-  idCard: /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/  // 身份证
+  idCard: /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/,  // 身份证
+  nickname: /^[\u4e00-\u9fa5a-zA-Z][\u4e00-\u9fa5a-zA-Z\d]+$/ //昵称
 }
 /**
  * 获取地址栏参数
@@ -43,7 +44,6 @@ function buildSign (params, key){
 		    str += "&";
 		  }
 		  str += util.hexMD5(key);
-		  console.log('queryStr:' + str);
 		  str = util.utf8(str);
 		  str = util.hexMD5(str);
 		  return str;

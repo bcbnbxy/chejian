@@ -3,11 +3,11 @@
 	<div class="setpassword-title">请设置密码</div>
 	<div class="setpassword-set">
 		<label>设置密码</label>
-		<input type="password" placeholder="6~20位数字、字母或字符" v-model="password"/>
+		<el-input type="password" placeholder="6~20位数字、字母或字符" v-model="password" clearable></el-input>
 	</div>
 	<div class="setpassword-sure">
 		<label>确认密码</label>
-		<input type="password" placeholder="请再次输入密码" v-model="passwordsure"/>
+		<el-input type="password" placeholder="请再次输入密码" v-model="passwordsure" clearable></el-input>
 	</div>
 	<el-button  type="info"  style="margin-top:35px;" @click="gochoosearea">下一步</el-button>
 </div>
@@ -36,7 +36,6 @@ import qs from 'qs'
 			          type: 'error'
 			       });
 				}else if(!regExs.password.test(this.$data.password)){
-					console.log(regExs.password.test(this.$data.password))
 					this.$message({
 			          message: '输入的密码格式不正确,请重新输入',
 			          type: 'error'
@@ -49,8 +48,7 @@ import qs from 'qs'
 				}else if(this.$data.password===this.$data.passwordsure){
 					this.$router.push('/register/choosecity')
 					
-				}
-				
+				}				
 			}
 		}
 	}
@@ -82,11 +80,13 @@ import qs from 'qs'
 	font-size:12px;
 	color:#263a55;
 }
-.setpassword-set input,.setpassword-sure input{
+.el-input__inner{
+	border:none;
+	border-bottom:1px solid #dedede;
 	height:31px;
 	line-height:31px;
 	font-size:12px;
 	color:#263a55;
-	border-bottom:1px solid #dedede;
+	border-radius: 0;
 }
 </style>

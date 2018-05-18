@@ -6,10 +6,13 @@ import router from './router'
 import '@/assets/style/base.css'
 import '@/assets/style/font/iconfont.css'
 import '@/assets/style/font/iconfont.js'
-import { Button,Message} from 'element-ui'
+import { Button,Message,Input,Select,Option,} from 'element-ui'
 // 引用API文件
 import api from './api/index.js'
 Vue.use(Button)
+Vue.use(Input)
+Vue.use(Select)
+Vue.use(Option)
 Vue.prototype.$message = Message;
 // 将API方法绑定到全局
 Vue.prototype.$api = api

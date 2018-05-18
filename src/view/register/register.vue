@@ -5,7 +5,13 @@
 			<h2 class="register-title">新用户注册</h2>
 			<div class="register-form">
 				<p>手机号码</p>
-				<div class="phonenum"><p><span>+86</span><i class="iconfont icon-jiantou-copy-copy"></i></p><input type="text" placeholder="请输入您的电话号码" v-model="newUsername"/></div>
+				<div class="phonenum">
+				  <el-input placeholder="请输入手机号" v-model="newUsername" class="input-with-select">
+				    <el-select v-model="select" slot="prepend" placeholder="区号" style="width:72px;padding:0;">
+				      <el-option label="86" value="1"></el-option>
+				    </el-select>
+				  </el-input>
+				</div>
 				<el-button type="info"  style="margin:17px 0 20px 0;" @click="gocode">下一步</el-button>
 				<div class="userAgreement">点击“下一步”即代表您同意《车间服务协议》</div>
 			</div>
@@ -34,7 +40,10 @@ import qs from 'qs'
 export default{
 	data(){
 		return {
-			newUsername:''			
+			newUsername:'',
+			value:'',
+			options:[],
+			select: ''
 		}
 	},
 	components:{RegLoginHead},
@@ -54,7 +63,8 @@ export default{
 				let parm={__uuid__:'863064010002246',__platform__:'android',__timestamp__:new Date().getTime(),__version__:"1.0.0",action:'checkRegister',areacode:'86',mobileno:this.newUsername};
 				parm.__sign__=buildSign(parm,'863064010002246')
 				this.$api.post('/Execute.do', qs.stringify(parm), r => {
-			     if(r.errCode==='0'&&r.data.checkRegister){
+					console.log(JSON.stringify(r));
+			     if(r.errorCode==='0'&&r.data.checkRegister){
 			     	this.$router.push({
 						name:'code',
 						params:{
@@ -82,7 +92,6 @@ export default{
 		flex-direction: column;		
 	}
 	.register-container{
-		/*height:100%;*/
 		flex: 1;		
 		width:100%;
 		padding:0 32px;
@@ -111,31 +120,21 @@ export default{
 		color:#263a55;
 	}
 	.phonenum{
-		height:38px;
-		padding:10px 0;
+		height:36px;
 		border-bottom:1px solid #dedede;
 		margin-top:8px;
-		display: flex;
-		display: -webkit-flex;
 	}
-	.phonenum>p{
-		flex:0 0 auto;
+	.phonenum .el-input-group__prepend{
+		border:none;
 		border-right:1px solid #dedede;
-		font-size:16px;
-		color:#263a55;
-	}
-	.phonenum>p>i{
-		font-size:12px;
-		vertical-align: middle;
-		margin:0 16px 0 11px;
-	}
-	.phonenum>input{
-		flex:1 1 auto;
 		background: none;
-		padding-left:46px;
-		font-size:12px;
-		color:#263a55;
-		font-weight: 600;
+	}
+	.phonenum .el-input-group--prepend .el-input__inner, .el-input-group__append{
+		height:32px;
+		border:none;
+	}
+	..demo-input.demo-zh-CN .el-select .el-input{
+		width:72px;
 	}
 	.userAgreement{
 		text-align: center;
