@@ -6,6 +6,7 @@ import router from './router'
 import '@/assets/style/base.css'
 import '@/assets/style/font/iconfont.css'
 import '@/assets/style/font/iconfont.js'
+import store from './store/index.js'
 import { Button,Message,Input,Select,Option,} from 'element-ui'
 // 引用API文件
 import api from './api/index.js'
@@ -40,6 +41,7 @@ alert(window.sys+"             "+window.uuid);
 var $vm=new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })

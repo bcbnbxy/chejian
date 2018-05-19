@@ -2,7 +2,7 @@
 <div class="code">
 	<div class="code-wrap">
 		<h3>请输入手机验证码</h3>
-		<p>验证码已发送至手机：<span>+86  {{$route.params.phonenum}}</span></p>
+		<p>验证码已发送至手机：<span>+{{$store.state.register.userInfo.areaCodes}}  {{$store.state.register.userInfo.phonenum}}</span></p>
 		<div class="input-group">
 			<input type="text"/>
 			<input type="text"/>
@@ -17,25 +17,50 @@
 
 <script>
 import RegLoginHead from'../../components/regsiter_login/reg_login_head'
+import {buildSign} from '../../assets/script/until.js'
+import qs from 'qs'
 export default{
 	data(){
 		return {			
-			miao:'5',
-			timer:null,
-			phonenum:''
+			miao:'',
+			timer:null
 		}		
 	},
+	created () {
+		console.log(this.$store.state.register.userInfo.checkcode);
+		if(this.$store.state.register.userInfo.checkcode){
+			this.getidentifyingcode();
+		}
+	},
 	components:{RegLoginHead},
-	mounted(){
-		var self = this;
-        self.$data.timer=setInterval(getTotelNumber,1000)
-         function getTotelNumber() {
-         	self.$data.miao --;
-            if(self.$data.miao===0){
-            	clearInterval(self.$data.timer);
-            	self.$router.replace('/register/setpassword')
-            }
-         }
+	methods:{
+		getidentifyingcode:function() {
+			let parm={__uuid__:this.$store.state.common.uuid,__platform__:this.$store.state.common.platform,__timestamp__:new Date().getTime(),__version__:this.$store.state.common.version,action:'sendCheckCode4Register',areacode:this.$store.state.register.userInfo.areaCodes,mobileno:this.$store.state.register.userInfo.phonenum};
+			parm.__sign__=buildSign(parm,this.$store.state.common.uuid);
+//			this.$api.post('/Execute.do', qs.stringify(parm), r => {
+//				if(r.errorCode=='0'){
+//					if(r.data.checkRegister){
+//					    var self = this;
+//					    self.$store.commit('setcheckcode');
+//					    self.data.miao=60;
+//			            self.$data.timer=setInterval(getTotelNumber,1000)
+//			            function getTotelNumber() {
+//					       	self.$data.miao --;
+//				            if(self.$data.miao===0){
+//				          	   clearInterval(self.$data.timer);
+//				          	   self.$store.commit('setcheckcode');
+//				          	   self.$router.replace('/register/setpassword')
+//					        }
+//				        }
+//					}
+//				}else{
+//					this.$message({
+//			          message: r.errorMessage,
+//			          type: 'error'
+//			        });
+//				}
+//			})
+		}
 	}
 }
 </script>

@@ -6,13 +6,13 @@
 			<div class="register-form">
 				<p>手机号码</p>
 				<div class="phonenum">
-				  <el-input placeholder="请输入手机号" v-model="newUsername" class="input-with-select">
+				  <el-input placeholder="请输入手机号" v-model="newUsername" class="input-with-select" @blur="checkRegister" ref="newUsername">
 				    <el-select v-model="select" slot="prepend" placeholder="区号" style="width:72px;padding:0;">
 				      <el-option label="86" value="1"></el-option>
 				    </el-select>
 				  </el-input>
 				</div>
-				<el-button type="info"  style="margin:17px 0 20px 0;" @click="gocode">下一步</el-button>
+				<el-button type="info"  style="margin:17px 0 20px 0;" :disabled="isdisabled" @click="gocode">下一步</el-button>
 				<div class="userAgreement">点击“下一步”即代表您同意《车间服务协议》</div>
 			</div>
 			<div class="thirdparty">
@@ -32,7 +32,6 @@
 		</div>
 	</div>	
 </template>
-
 <script>
 import RegLoginHead from'../../components/regsiter_login/reg_login_head'
 import {buildSign,regExs} from '../../assets/script/until.js'
@@ -43,42 +42,52 @@ export default{
 			newUsername:'',
 			value:'',
 			options:[],
-			select: ''
+			select: '1',
+			isdisabled:true
 		}
 	},
 	components:{RegLoginHead},
 	methods:{
-		gocode:function(){
-			if(this.$data.newUsername===""){
+		/****检查手机号是否注册****/
+		checkRegister:function(){
+			if(this.$data.newUsername==""){
 				this.$message({
 		          message: '账号不能为空!',
 		          type: 'error'
 		        });
+		        this.$refs.newUsername.$el.children[1].focus();
 			}else if(!regExs.mobile.test(this.$data.newUsername)){
 				this.$message({
 		          message: '手机号格式不正确!',
 		          type: 'error'
 		        });
+		        this.$refs.newUsername.$el.children[1].focus();
+		        this.newUsername='';
 			}else{	
-				let parm={__uuid__:'863064010002246',__platform__:'android',__timestamp__:new Date().getTime(),__version__:"1.0.0",action:'checkRegister',areacode:'86',mobileno:this.newUsername};
-				parm.__sign__=buildSign(parm,'863064010002246')
+				let parm={__uuid__:this.$store.state.common.uuid,__platform__:this.$store.state.common.platform,__timestamp__:new Date().getTime(),__version__:this.$store.state.common.version,action:'checkRegister',areacode:this.$store.state.register.userInfo.areaCodes,mobileno:this.$data.newUsername};
+				parm.__sign__=buildSign(parm,this.$store.state.common.uuid)
 				this.$api.post('/Execute.do', qs.stringify(parm), r => {
-					console.log(JSON.stringify(r));
-			     if(r.errorCode==='0'&&r.data.checkRegister){
-			     	this.$router.push({
-						name:'code',
-						params:{
-							phonenum:this.newUsername
-						}
-					})
-			     }else{
-			     	this.$message({
-				          message: r.errorMessage,
-				          type: 'error'
-				        });
-			     }
+				     if(r.errorCode=='0'){
+				     	if(r.data.checkRegister){
+				     		this.$store.commit('getphonenum',this.$data.newUsername);
+				     		this.$data.isdisabled=false;
+				     	}else{
+				     		this.$message({
+					          message: '您的手机号已经被注册，请更换手机号!',
+					          type: 'error'
+					        });
+				     	}
+				     }else{
+				     	this.$message({
+					          message: r.errorMessage,
+					          type: 'error'
+					        });
+				     }
 			    })
 			}		
+		},
+		gocode:function(){
+			this.$router.push('/register/code')
 		}
 	}
 }
