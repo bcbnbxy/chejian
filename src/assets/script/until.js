@@ -34,7 +34,6 @@ function buildSign (params, key){
 		    names.push(paramName);
 		  }
 		  names.sort();
-//		  console.log('names:' + names);
 		  var str = '';
 		  for(var i = 0; i < names.length; i++){
 		    var name = names[i];

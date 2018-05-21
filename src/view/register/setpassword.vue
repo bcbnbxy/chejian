@@ -3,52 +3,87 @@
 	<div class="setpassword-title">请设置密码</div>
 	<div class="setpassword-set">
 		<label>设置密码</label>
-		<el-input type="password" placeholder="6~20位数字、字母或字符" v-model="password" clearable></el-input>
+		<el-input type="password"  placeholder="6~20位数字、字母或字符" v-model="password" clearable></el-input>
 	</div>
 	<div class="setpassword-sure">
 		<label>确认密码</label>
-		<el-input type="password" placeholder="请再次输入密码" v-model="passwordsure" clearable></el-input>
+		<el-input type="password" placeholder="请再次输入密码"  v-model="passwordsure" clearable></el-input>
 	</div>
-	<el-button  type="info"  style="margin-top:35px;" @click="gochoosearea">下一步</el-button>
+	<el-button  type="info"  style="margin-top:35px;" :disabled="isdisabled" @click="gocode">下一步</el-button>
 </div>
 </template>
 
 <script>
 import {buildSign,regExs} from '../../assets/script/until.js'
 import qs from 'qs'
+let lodash = require('lodash')
 	export default{
 		data () {
 			return {
 				password:'',
-				passwordsure:''
+				passwordsure:'',
+				isdisabled:true
 			}
 		},
+		created (){
+			this.debouncedSetpassword = lodash.debounce(this.setpassword, 500)
+			this.debouncedSurpassword = lodash.debounce(this.surpassword, 500)
+		},
 		methods:{
-			gochoosearea:function(){
-				if(this.$data.password===''){
+			setpassword:function(){
+				if(this.$data.password.trim().length<1){
+					this.$message({
+			          message: '密码不能为空',
+			          type: 'error'
+			      });
+			      this.$data.isdisabled=true;
+			   }else if(!regExs.password.test(this.$data.password)){
+			   		this.$message({
+			           message: '密码格式不正确',
+			           type: 'error'
+			       });
+			       this.$data.isdisabled=true;
+			   }else if(this.$data.passwordsure!==this.$data.password){
+			    	this.$data.isdisabled=true;
+			    }else if(this.$data.passwordsure===this.$data.password){
+			    	this.$data.isdisabled=false;
+			    	this.$store.commit('getpassword',{"password":this.$data.password,"surepassword":this.$data.passwordsure});
+			    }
+			},
+			surpassword:function(){
+				if(this.$data.passwordsure.trim().length<1){
 					this.$message({
 			          message: '请设置密码',
 			          type: 'error'
+			      });
+			      this.$data.isdisabled=true;
+			   }else if(!regExs.password.test(this.$data.passwordsure)){
+			   		this.$message({
+			           message: '密码格式不正确',
+			           type: 'error'
 			       });
-				}else if(this.$data.passwordsure===''){
-					this.$message({
-			          message: '请确认密码',
-			          type: 'error'
+			       this.$data.isdisabled=true;
+			    }else if(this.$data.passwordsure!==this.$data.password){
+			    	this.$message({
+			           message: '两次密码不一致',
+			           type: 'error'
 			       });
-				}else if(!regExs.password.test(this.$data.password)){
-					this.$message({
-			          message: '输入的密码格式不正确,请重新输入',
-			          type: 'error'
-			       });
-				}else if(this.$data.password!==this.$data.passwordsure){
-					this.$message({
-			          message: '两次输入的密码不一致，请重新输入',
-			          type: 'error'
-			       });
-				}else if(this.$data.password===this.$data.passwordsure){
-					this.$router.push('/register/choosecity')
-					
-				}				
+			    	this.$data.isdisabled=true;
+			    }else if(this.$data.passwordsure===this.$data.password){
+			    	this.$data.isdisabled=false;
+			    	this.$store.commit('getpassword',{"password":this.$data.password,"surepassword":this.$data.passwordsure});
+			    }					
+			},
+			gocode:function(){
+				this.$router.push('/register/code')
+			}
+		},
+		watch:{
+			'password':function(){
+				this.debouncedSetpassword();
+			},
+			'passwordsure':function(){
+				this.debouncedSurpassword();
 			}
 		}
 	}

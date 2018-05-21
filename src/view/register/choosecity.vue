@@ -27,7 +27,7 @@
 		        </div>
 		    </section>
 		</div>
-		<el-button type="info" style="margin-top:36px;" :disabled="isdisabled" @click="aaa">进入车间</el-button>
+		<el-button type="info" style="margin-top:36px;" :disabled="isdisabled" @click="gologin">进入车间</el-button>
 	</div>
 </template>
 
@@ -51,10 +51,13 @@
       // v-for循环判断是否为当前
       selected: false,
       info:[]
+      
     }
   },
   created () {
-  	this.getprovince();
+  	if(this.$store.state.register.getprovince){
+  		this.getprovince();
+  	}
   },
   methods: {
     choseAdd: function() {
@@ -80,11 +83,12 @@
     	}
     },
     getprovince:function(){
-    	let parm={__uuid__:'863064010002246',__platform__:'android',__timestamp__:new Date().getTime(),__version__:"1.0.0",action:'provinces'};
-    	parm.__sign__=buildSign(parm,'863064010002246');
+    	let parm={__uuid__:this.$store.state.common.uuid,__platform__:this.$store.state.common.platform,__timestamp__:new Date().getTime(),__version__:this.$store.state.common.version,action:'provinces'};
+    	parm.__sign__=buildSign(parm,this.$store.state.common.uuid);
     	this.$api.post('/Execute.do', qs.stringify(parm), r => {
     		if(r.errorCode==='0'){
-    			this.info=r.data.provinces
+    			this.info=r.data.provinces;
+    			this.$store.commit('setGetprovince');
     		}else {
     			this.$message({
 		          message: r.errorMessage,
@@ -107,6 +111,7 @@
       if(this.provincename&&this.cityname){
       	this.isdisabled=false;
       	this.showChose=false;
+      	this.$store.commit('getarea',{"provincesname":this.provincename,"cityname":this.cityname})
       }
     },
     getCityId: function(code, input, index) {
@@ -119,6 +124,7 @@
       if(this.provincename&&this.cityname){
       	this.isdisabled=false;
       	this.showChose=false;
+      	this.$store.commit('getarea',{"provincesname":this.provincename,"cityname":this.cityname})
       }
     },
     checknickname:function(){
@@ -139,10 +145,10 @@
     		let parm={__uuid__:'863064010002246',__platform__:'android',__timestamp__:new Date().getTime(),__version__:"1.0.0",action:'checkNickname',nickname:this.nickname};
     		parm.__sign__=buildSign(parm,'863064010002246');
     		this.$api.post('/Execute.do', qs.stringify(parm), r => {
-    			console.log(JSON.stringify(r));
     			if(r.errorCode==='0'){
     				if(r.data.checkNickname){
     					this.checknick=true;
+    					this.$store.commit('getnickname',this.nickname);
     				}else{
     					this.$message({
 				          message: '该昵称已经被注册,请重新输入',
@@ -160,8 +166,8 @@
     		})
     	}
     },
-    aaa:function(){
-    	alert(1111);
+    gologin:function(){
+    	console.log(JSON.stringify(this.$store.state.register.userInfo));
     }
   }
 }
@@ -269,7 +275,6 @@
   left:-32px;
   background:#fff;
   padding-top:32px;
-  /*transform: translateX(-100%);*/
 }
 .title{
 	height:16px;
@@ -291,9 +296,10 @@
 .subhead{
 	height:26px;
 	font-size:14px;
+	padding:0 36px;
 	display: flex;
 	display: -webkit-flex;
-	justify-content: space-around;
+	justify-content: space-between;
 }
 .area{
   height:26px;
@@ -304,7 +310,8 @@
 .listbox{
 	display: flex;
 	display: -webkit-flex;
-	justify-content: space-around;
+	justify-content: space-between;
+	padding:0 36px;
 }
 .addList{
   width:100%;

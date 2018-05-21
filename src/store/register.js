@@ -6,33 +6,43 @@ export default {
 			code:'',
 			password:'',
 			nickname:'',
-			area:{
-				provincesname:'',
-				cityname:''
-			},
-			checkcode:true
-		}
+			provincesname:'',
+			cityname:'',
+			surepassword:''
+		},
+		checkcode:true,
+		codetime:20,
+		getprovince:true
 	},
 	mutations: {
 		getphonenum(state,phonenum){
 			state.userInfo.phonenum=phonenum;
-			console.log(state.userInfo.phonenum)
 		},
 		getcode(state,code){
 			state.userInfo.code=code;
 		},
 		getpassword(state,password){
-			state.userInfo.password=password;
+			state.userInfo.password=password.password;
+			state.userInfo.surepassword=password.surepassword;
 		},
 		getnickname(state,nickname){
 			state.userInfo.nickname=nickname;
 		},
 		getarea(state,area){
-			state.userInfo.area.provincesname=area.provincesname;
-			state.userInfo.area.cityname=area.cityname;
+			state.userInfo.provincesname=area.provincesname;
+			state.userInfo.cityname=area.cityname;
 		},
 		setcheckcode(state){
-			state.userInfo.checkcode=!state.userInfo.checkcode;
+			state.checkcode=!state.checkcode;
+		},
+		setcodetime(state){
+			state.codetime --;
+			if(state.codetime==-1){
+				state.codetime=20;
+			}
+		},
+		setGetprovince(state){
+			state.getprovince=!state.getprovince;
 		}
 	}
 }

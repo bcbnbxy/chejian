@@ -6,13 +6,13 @@
 			<div class="register-form">
 				<p>手机号码</p>
 				<div class="phonenum">
-				  <el-input placeholder="请输入手机号" v-model="newUsername" class="input-with-select" @blur="checkRegister" ref="newUsername">
+				  <el-input placeholder="请输入手机号" v-model="newUsername" class="input-with-select" ref="newUsername" autofocus>
 				    <el-select v-model="select" slot="prepend" placeholder="区号" style="width:72px;padding:0;">
 				      <el-option label="86" value="1"></el-option>
 				    </el-select>
 				  </el-input>
 				</div>
-				<el-button type="info"  style="margin:17px 0 20px 0;" :disabled="isdisabled" @click="gocode">下一步</el-button>
+				<el-button type="info"  style="margin:17px 0 20px 0;" :disabled="isdisabled" @click="gosetpassword">下一步</el-button>
 				<div class="userAgreement">点击“下一步”即代表您同意《车间服务协议》</div>
 			</div>
 			<div class="thirdparty">
@@ -36,7 +36,11 @@
 import RegLoginHead from'../../components/regsiter_login/reg_login_head'
 import {buildSign,regExs} from '../../assets/script/until.js'
 import qs from 'qs'
+let lodash = require('lodash')
 export default{
+	created(){
+		 this.debouncedCheckUsername = lodash.debounce(this.checkUsername, 1000)
+	},
 	data(){
 		return {
 			newUsername:'',
@@ -48,21 +52,17 @@ export default{
 	},
 	components:{RegLoginHead},
 	methods:{
-		/****检查手机号是否注册****/
-		checkRegister:function(){
-			if(this.$data.newUsername==""){
+		checkUsername:function(){
+			if(this.$data.newUsername.trim()<1){
 				this.$message({
 		          message: '账号不能为空!',
 		          type: 'error'
-		        });
-		        this.$refs.newUsername.$el.children[1].focus();
+		       });
 			}else if(!regExs.mobile.test(this.$data.newUsername)){
 				this.$message({
 		          message: '手机号格式不正确!',
 		          type: 'error'
-		        });
-		        this.$refs.newUsername.$el.children[1].focus();
-		        this.newUsername='';
+		       });
 			}else{	
 				let parm={__uuid__:this.$store.state.common.uuid,__platform__:this.$store.state.common.platform,__timestamp__:new Date().getTime(),__version__:this.$store.state.common.version,action:'checkRegister',areacode:this.$store.state.register.userInfo.areaCodes,mobileno:this.$data.newUsername};
 				parm.__sign__=buildSign(parm,this.$store.state.common.uuid)
@@ -79,15 +79,20 @@ export default{
 				     	}
 				     }else{
 				     	this.$message({
-					          message: r.errorMessage,
-					          type: 'error'
-					        });
+				          message: r.errorMessage,
+				          type: 'error'
+				        });
 				     }
 			    })
-			}		
+			}
 		},
-		gocode:function(){
-			this.$router.push('/register/code')
+		gosetpassword:function(){
+			this.$router.push('/register/setpassword')
+		}
+	},
+	watch:{
+		'newUsername':function(){
+			this.debouncedCheckUsername()
 		}
 	}
 }
