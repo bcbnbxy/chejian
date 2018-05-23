@@ -4,36 +4,128 @@
 		<div class="restpassword-group">
 			<div class="login-phonenum">
 				<h3>手机号码</h3>
-				<div class="phonenum"><p><span>+86</span><i class="iconfont icon-jiantou-copy-copy"></i></p><input type="text" placeholder="请输入您的电话号码"/></div>
+				<div class="phonenum">
+				  <el-input placeholder="请输入您的电话号码"  v-model="LoginName" class="input-with-select" clearable>
+				    <el-select v-model="select" slot="prepend" placeholder="区号" style="width:72px;padding:0;">
+				      <el-option label="86" value="1"></el-option>
+				    </el-select>
+				  </el-input>
+				</div>
 			</div>
 			<div class="restpassword-yzm">
-				<label>登录密码</label>
-				<input type="text" placeholder="6~20位数字、字母或字符"/>
+				<label>手机验证码</label>
+				<el-input class="loginpassword" type="text" placeholder="手机验证码"  v-model="YZM" clearable></el-input>
 			</div>
-			<div class="getyzm"><span @click="djs()">获取验证码</span><span v-show="getyzm">{{time}}s</span></div>
-			<router-link tag="el-button" to="/login/SetPassword_login" class="el-button--info">下一步</router-link>
+			<div class="getyzm"><span @click="sendcode">{{$store.state.login.sendmessage}}</span><span v-show="$store.state.login.yzmtrue">({{$store.state.login.sendcodetime}} s)</span></div>
+			<el-button type="info" :disabled="isdisabled" @click="gosetpassword">下一步</el-button>
 		</div>
 	</div>
 </template>
 
 <script>
+import {regExs} from '../../assets/script/until.js'
+let lodash = require('lodash')
 export default{
 	data(){
 		return {
-			time:'10',
-			getyzm:false
+			loginname: '',
+			loginnametrue:false,
+			yzm:'',
+			yzmtrue:false,
+			select:'1'			
+		}
+	},
+	computed:{
+		LoginName:{
+			set:lodash.debounce(function(value){
+				if(value.trim().length<1){
+					this.$message({
+			          message: '手机号不能为空',
+			          type: 'error'
+			       });
+			       this.loginnametrue=false;
+				}else if(!regExs.mobile.test(value)){
+					this.$message({
+			          message: '手机号格式不正确!',
+			          type: 'error'
+			       });
+			       this.loginnametrue=false;
+				}else if(regExs.mobile.test(value)){
+					this.$message({
+			          message: '手机号输入正确!',
+			          type: 'success'
+			       });
+					this.loginnametrue=true;
+					this.loginname=value;
+					this.$store.commit('changesendmsg','获取验证码')
+				}
+			},1000),
+			get:function(){
+				return this.loginname;
+			}
+		},
+		YZM:{
+			set:lodash.debounce(function(value){
+				if(value.trim().length<1){
+					this.$message({
+			          message: '验证码不能为空',
+			          type: 'error'
+			       });
+			       this.yzmtrue=false;
+				}else if(!regExs.yzm.test(value)){
+					this.$message({
+			          message: '手机号格式不正确!',
+			          type: 'error'
+			       });
+			       this.yzmtrue=false;
+				}else if(regExs.yzm.test(value)){
+					this.$message({
+			          message: '验证码格式正确',
+			          type: 'success'
+			       });
+					this.yzmtrue=true;
+					this.yzm=value;
+					this.$store.commit('changesendmsg','获取验证码')
+				}
+			},1000),
+			get:function(){
+				return this.yzm;
+			}
+		},
+		isdisabled:function(){
+			if(this.loginnametrue&&this.yzmtrue){
+				return false;
+			}else{
+				return true;
+			}
 		}
 	},
 	methods:{
-		djs:function(){
-			this.$data.getyzm=true;
-			var timer = setInterval(() => {
-            this.$data.time --;
-              if(this.$data.time===-1){
-              	clearInterval(timer);
-              	this.$data.getyzm=false;
-              }
-        	}, 1000)
+		sendcode:function(){
+			if(this.$store.state.login.sendcodetrue){
+				var self=this;
+				this.$api('Execute.do',{action:"sendCheckCode4Reset",mobileno:this.loginname,areacode:'86'}).then(function(r){
+					if(r.errorCode==0){
+						self.$store.commit('sendcodetime');
+						self.$store.commit('changesendmsg',"验证码已发送");
+						self.$store.commit('changeyzmtrue');
+						self.$store.state.login.sendcodetimer=setInterval(getTotelNumber,1000)
+					}else{
+						this.$message({
+				          message: r.errorMessage,
+				          type: 'error'
+				       });
+					}
+				})
+				
+			}
+			function getTotelNumber() {
+		       	self.$store.commit('sendcodedjs');
+	        }
+		},
+		gosetpassword:function(){
+			this.$store.commit('restpasswordInfo',{checkcode:this.yzm,mobileno:this.loginname});
+			this.$router.push('/login/SetPassword_login')
 		}
 	}
 }
@@ -41,12 +133,14 @@ export default{
 
 <style>
 .restpassword{
+	height:100%;		
 	padding:0 32px;
+	padding-top:100px;
 }
 .restpassword-title{
 	height:22px;
 	color:#263a55;
-	margin:56px 0 77px 0;
+	margin:0 0 77px 0;
 	font-size:22px;
 	line-height:22px;
 }
@@ -63,12 +157,13 @@ export default{
 	color:#263a55;
 	font-weight: 600;
 }
-.restpassword-yzm input{
-	height:30px;
+.restpassword-yzm .loginpassword input{
+	height:40px;
 	font-size:12px;
-	line-height:30px;
+	line-height:40px;
 	color:#263a55;
 	text-align: center;
+	border:none;
 	border-bottom:1px solid #dedede;
 }
 .getyzm{
@@ -78,5 +173,26 @@ export default{
 	text-align: right;
 	font-size:12px;
 	margin-bottom:11px;
+}
+.login-phonenum h3{
+	height:12px;
+	font-size:12px;
+	line-height:12px;
+	color:#263a55;
+	font-weight: 600;
+}
+.phonenum{
+	height:36px;
+	border-bottom:1px solid #dedede;
+	margin-top:8px;
+}
+.phonenum .el-input-group__prepend{
+	border:none;
+	border-right:1px solid #dedede;
+	background: none;
+}
+.phonenum .el-input-group--prepend .el-input__inner, .el-input-group__append{
+	height:32px;
+	border:none;
 }
 </style>

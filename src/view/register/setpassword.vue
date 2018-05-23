@@ -14,8 +14,7 @@
 </template>
 
 <script>
-import {buildSign,regExs} from '../../assets/script/until.js'
-import qs from 'qs'
+import {regExs} from '../../assets/script/until.js'
 let lodash = require('lodash')
 	export default{
 		data () {
@@ -91,14 +90,15 @@ let lodash = require('lodash')
 
 <style>
 .setpassword{
+	height:100%;		
 	padding:0 32px;
+	padding-top:67px;
 }
 .setpassword-title{
 	font-size:22px;
 	color:#263a55;
 	height:22px;
 	line-height:22px;
-	margin-top:25px;
 	font-weight: 600;
 	margin-bottom:57px;
 }

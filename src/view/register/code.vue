@@ -2,7 +2,7 @@
 <div class="code">
 	<div class="code-wrap">
 		<h3>请输入手机验证码</h3>
-		<p>验证码已发送至手机：<span>+{{$store.state.register.userInfo.areaCodes}}  {{$store.state.register.userInfo.phonenum}}</span></p>
+		<p>验证码已发送至手机：<span>+{{$store.state.register.userInfo.areaCodes}}  {{$store.state.register.userInfo.mobileno}}</span></p>
 		<div class="security-code-wrap">
 			 <label for="code" style="width:100%;">
 				  <ul class="security-code-container">
@@ -23,13 +23,11 @@
 
 <script>
 import RegLoginHead from'../../components/regsiter_login/reg_login_head'
-import {buildSign} from '../../assets/script/until.js'
-import qs from 'qs'
 export default{
 	props: {
 	    number: {
 		   type: Number,
-		   default: 4
+		   default: 6
 		},
 		placeholder: {
 		   type: String,
@@ -63,9 +61,16 @@ export default{
 	        }
 		},
 		sendcode:function(){
-//			let parm={__uuid__:this.$store.state.common.uuid,__platform__:this.$store.state.common.platform,__timestamp__:new Date().getTime(),__version__:this.$store.state.common.version,action:'sendCheckCode4Register',areacode:this.$store.state.register.userInfo.areaCodes,mobileno:this.$store.state.register.userInfo.phonenum};
-//			parm.__sign__=buildSign(parm,this.$store.state.common.uuid);
-//          this.$api.post('/Execute.do', qs.stringify(parm), r => {});
+			let parm={action:'sendCheckCode4Register',areacode:this.$store.state.register.userInfo.areaCodes,mobileno:this.$store.state.register.userInfo.mobileno};
+            var that=this;
+            this.$api('/Execute.do', parm).then(function(r){
+            	if(r.errorCode==0){
+            		that.$message({
+			          message: '验证码已发送',
+			          type: 'success'
+			       });
+            	}
+            });
 		},
 		hideKeyboard() {
 		  // 输入完成隐藏键盘
@@ -88,14 +93,14 @@ export default{
 <style>
 .code{
 	width:100%;
-}
-.code-wrap{
 	padding:0 32px;
+	height:100%;
+	padding-top:67px;
 }
 .code-wrap>h3{
 	height:22px;
 	color:#263a55;
-	margin:25px 0 11px 0;
+	margin:0 0 11px 0;
 	font-size:22px;
 	line-height:22px;
 }

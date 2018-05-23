@@ -13,7 +13,8 @@ const regExs = {
   name: /^[a-zA-Z\u4e00-\u9fa5]{2,16}$/,  // 中文名
   password:/^[\x21-\x7E]{6,20}$/,  // 密码
   idCard: /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/,  // 身份证
-  nickname: /^[\u4e00-\u9fa5a-zA-Z][\u4e00-\u9fa5a-zA-Z\d]+$/ //昵称
+  nickname: /^[\u4e00-\u9fa5a-zA-Z][\u4e00-\u9fa5a-zA-Z\d]+$/, //昵称
+  yzm:/^\d{6}$/ //六位数字验证码
 }
 /**
  * 获取地址栏参数

@@ -27,13 +27,12 @@
 		        </div>
 		    </section>
 		</div>
-		<el-button type="info" style="margin-top:36px;" :disabled="isdisabled" @click="gologin">进入车间</el-button>
+		<el-button type="info" style="margin-top:36px;" :disabled="isdisabled" @click="gologin">去登陆</el-button>
 	</div>
 </template>
 
 <script>
-	import {buildSign,regExs} from '../../assets/script/until.js'
-	import qs from 'qs'
+	import {regExs} from '../../assets/script/until.js'
 	export default{
 		data () {
     return {
@@ -83,18 +82,17 @@
     	}
     },
     getprovince:function(){
-    	let parm={__uuid__:this.$store.state.common.uuid,__platform__:this.$store.state.common.platform,__timestamp__:new Date().getTime(),__version__:this.$store.state.common.version,action:'provinces'};
-    	parm.__sign__=buildSign(parm,this.$store.state.common.uuid);
-    	this.$api.post('/Execute.do', qs.stringify(parm), r => {
+    	var that=this;
+    	this.$api('/Execute.do', {action:'provinces'}).then(function(r){
     		if(r.errorCode==='0'){
-    			this.info=r.data.provinces;
-    			this.$store.commit('setGetprovince');
+    			that.info=r.data.provinces;
+    			that.$store.commit('setGetprovince');
     		}else {
-    			this.$message({
+    			that.$message({
 		          message: r.errorMessage,
 		          type: 'error'
 		        });
-    		}    		
+    		}
     	})
     },
     getProvinceId: function(code,input,index) {
@@ -142,42 +140,56 @@
 	       this.nickname='';
 	       this.$refs.nickname.$el.children[0].focus();
     	}else if(regExs.nickname.test(this.nickname)){
-    		let parm={__uuid__:'863064010002246',__platform__:'android',__timestamp__:new Date().getTime(),__version__:"1.0.0",action:'checkNickname',nickname:this.nickname};
-    		parm.__sign__=buildSign(parm,'863064010002246');
-    		this.$api.post('/Execute.do', qs.stringify(parm), r => {
+    		var that=this;
+    		this.$api('/Execute.do',{action:'checkNickname',nickname:this.nickname}).then(function(r){
     			if(r.errorCode==='0'){
     				if(r.data.checkNickname){
-    					this.checknick=true;
-    					this.$store.commit('getnickname',this.nickname);
+    					that.checknick=true;
+    					that.$store.commit('getnickname',that.nickname);
     				}else{
-    					this.$message({
+    					that.$message({
 				          message: '该昵称已经被注册,请重新输入',
 				          type: 'error'
 				       });
-				        this.nickname='';
-	       				this.$refs.nickname.$el.children[0].focus();
+				        that.nickname='';
+	       				that.$refs.nickname.$el.children[0].focus();
     				}
     			}else{
-					this.$message({
-				          message: r.errorMessage,
-				          type: 'error'
-				       });
+					that.$message({
+			          message: r.errorMessage,
+			          type: 'error'
+			       });
     			}
     		})
     	}
     },
     gologin:function(){
-    	console.log(JSON.stringify(this.$store.state.register.userInfo));
+		var that=this;
+		let parm=this.$store.state.register.userInfo;
+		parm.action="register";
+		this.$api('/Execute.do',this.$store.state.register.userInfo).then(function(r){
+			if(r.errorCode=='0'){
+				that.$message({
+		          message: '注册成功',
+		          type: 'success'
+		        });
+		        that.$router.push('/login');
+			}else{
+				that.$message({
+			          message: r.errorMessage,
+			          type: 'error'
+		        });	
+			}
+		})
     }
   }
 }
 </script>
 <style>
 	.choosecity{
-		flex:1;		
 		height:100%;
 		padding:0 32px;
-		padding-top:25px;
+		padding-top:67px;
 	}
 	.choosecity-title{
 		height:22px;
@@ -296,7 +308,7 @@
 .subhead{
 	height:26px;
 	font-size:14px;
-	padding:0 36px;
+	padding:0 12px;
 	display: flex;
 	display: -webkit-flex;
 	justify-content: space-between;
@@ -311,7 +323,7 @@
 	display: flex;
 	display: -webkit-flex;
 	justify-content: space-between;
-	padding:0 36px;
+	padding:0 12px;
 }
 .addList{
   width:100%;
