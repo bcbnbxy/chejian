@@ -109,6 +109,7 @@ export default {
 			       });
 			       that.$store.commit('getloginInfo',r.data.login)
 			       that.$router.push('/home');
+			       localStorage.setItem("loginInfo",JSON.stringify({logintrue:true,time:new Date().getTime()}))
 				}else{
 					that.$message({
 			          message: r.errorMessage,

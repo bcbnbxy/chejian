@@ -5,6 +5,7 @@ import Vuex from 'vuex'
 import register from './register'
 import common from './common'
 import login from './login'
+//import createPersistedState from 'vuex-persistedstate'
 Vue.use(Vuex)
 export default new Vuex.Store({
   modules: {

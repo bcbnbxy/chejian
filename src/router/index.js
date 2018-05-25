@@ -17,6 +17,7 @@ import Faxian from '@/view/home_faxian/faxian'
 import PlayVideo from '@/view/home_faxian/playvideo'
 Vue.use(Router)
 export default new Router({
+	linkActiveClass:'v-link-active',
   routes: [
     {
       path: '/',

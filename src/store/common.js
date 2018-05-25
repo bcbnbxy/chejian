@@ -6,7 +6,7 @@ export default {
 	        __platform__:'android',
  		    __version__:'1.0.0',
  		    __timestamp__:new Date().getTime()
-		} 		
+		} 
 	},
 	mutations: {
 		getversion(state,version){

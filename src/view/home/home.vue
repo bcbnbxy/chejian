@@ -7,7 +7,7 @@
 			<router-view></router-view>
 		</div>
 		<footer class="footer">
-			<router-link to="/" tag="div" ><i class="iconfont icon-shouye"></i><span>首页</span></router-link>
+			<router-link to="/home" tag="div" ><i class="iconfont icon-shouye"></i><span>首页</span></router-link>
 			<router-link to="/faxian" tag="div"><i class="iconfont icon-faxian"></i><span>发现</span></router-link>
 			<div><i class="iconfont icon-pengyou"></i><span>车友</span></div>
 			<div><i class="iconfont icon-weibiaoti-_huabanfuben"></i><span>我的</span></div>

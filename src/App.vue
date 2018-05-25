@@ -17,7 +17,27 @@
 //			}		
 //	}, false );
 export default {
-  name: 'App'
+  name: 'App',
+  created(){
+//	this.checklogin();
+		
+  },
+  methods:{
+  	//判断用户的登录状态
+  	checklogin:function(){
+  		let loginInfo={};
+  		if(localStorage.getItem('loginInfo')){
+  			loginInfo=JSON.parse(localStorage.getItem('loginInfo'));
+  			if(loginInfo.logintrue){
+  				this.$router.push('/home');
+  			}else{
+  				this.$router.push('/');
+  			}
+  		}else{
+  			this.$router.push('/');
+  		}
+  	}
+  }
 }
 </script>
 
