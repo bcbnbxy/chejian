@@ -6,7 +6,8 @@ export default {
 	        __platform__:'android',
  		    __version__:'1.0.0',
  		    __timestamp__:new Date().getTime()
-		} 
+		},
+		searchstatus:false
 	},
 	mutations: {
 		getversion(state,version){
@@ -17,6 +18,9 @@ export default {
 		},
 		getuuid(state,uuid){
 			state.publicOption.uuid=uuid;
-		}
+		},
+		toggleSearchStatus(state, status) {
+	        state.searchstatus = status
+	    }
 	}
 }

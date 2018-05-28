@@ -5,19 +5,15 @@
 			<div class="login-phonenum">
 				<h3>手机号码</h3>
 				<div class="phonenum">
-				  <el-input placeholder="请输入手机号"  v-model="LoginName" class="input-with-select" ref="newUsername" clearable>
-				    <el-select v-model="select" slot="prepend" placeholder="区号" style="width:72px;padding:0;">
-				      <el-option label="86" value="1"></el-option>
-				    </el-select>
-				  </el-input>
+				  <span>+86</span><input placeholder="请输入手机号" type="tel" v-model="LoginName" ref="newUsername" autofocus/>
 				</div>			
 			</div>
 			<div class="login-password">
 				<label>登录密码</label>
-				<el-input class="loginpassword" type="password" placeholder="6~20位数字、字母或字符"  v-model="PassWord" clearable></el-input>
+				<input class="loginpassword" type="password" placeholder="6~20位数字、字母或字符"  v-model="PassWord"/>
 			</div>
 			<router-link tag="p" to="/login/restpassword" class="forgetpassword">忘记密码？</router-link>
-			<el-button type="info" :disabled="isdisabled" @click="login">登陆</el-button>
+			<mt-button type="default" :disabled="isdisabled" @click="login">登陆</mt-button>
 		</div>
 	</div>
 </template>
@@ -39,21 +35,24 @@ export default {
 		LoginName:{
 			set:lodash.debounce(function(value){
 				if(value.trim().length<1){
-					this.$message({
+					this.$toast({
 			          message: '手机号不能为空',
-			          type: 'error'
+			          position: 'bottom',
+  					  duration: 1500
 			       });
 			       this.loginnametrue=false;
 				}else if(!regExs.mobile.test(value)){
-					this.$message({
+					this.$toast({
 			          message: '手机号格式不正确!',
-			          type: 'error'
+			          position: 'bottom',
+  					  duration: 1500
 			       });
 			       this.loginnametrue=false;
 				}else if(regExs.mobile.test(value)){
-					this.$message({
+					this.$toast({
 			          message: '手机号输入正确!',
-			          type: 'success'
+			          position: 'bottom',
+  					  duration: 1500
 			       });
 					this.loginnametrue=true;
 					this.loginname=value;
@@ -66,21 +65,24 @@ export default {
 		PassWord:{
 			set:lodash.debounce(function(value){
 				if(value.trim().length<1){
-					this.$message({
+					this.$toast({
 			          message: '密码不能为空',
-			          type: 'error'
+			          position: 'bottom',
+  					  duration: 1500
 			       });
 			       this.passwordtrue=false;
 				}else if(!regExs.password.test(value)){
-					this.$message({
+					this.$toast({
 			          message: '密码格式不正确!',
-			          type: 'error'
+			          position: 'bottom',
+  					  duration: 1500
 			       });
 			       this.passwordtrue=false;
 				}else if(regExs.password.test(value)){
-					this.$message({
+					this.$toast({
 			          message: '密码输入正确!',
-			          type: 'success'
+			          position: 'bottom',
+  					  duration: 1500,
 			       });
 			       this.passwordtrue=true;
 			       this.password=value;
@@ -103,17 +105,19 @@ export default {
 			var that=this;
 			this.$api('/Execute.do',{loginname:this.loginname,password:this.password,action:'login'}).then(function(r){
 				if(r.errorCode==0){
-					that.$message({
+					that.$toast({
 			          message: '登录成功',
-			          type: 'success'
+			          position: 'bottom',
+  					  duration: 1500
 			       });
 			       that.$store.commit('getloginInfo',r.data.login)
 			       that.$router.push('/home');
 			       localStorage.setItem("loginInfo",JSON.stringify({logintrue:true,time:new Date().getTime()}))
 				}else{
-					that.$message({
+					that.$toast({
 			          message: r.errorMessage,
-			          type: 'error'
+			          position: 'bottom',
+  					  duration: 1500
 			       });
 				}
 			})
@@ -147,18 +151,23 @@ export default {
 	color:#263a55;
 }
 .phonenum{
-	height:36px;
+	height:38px;
+	display:flex;
+	display: -webkit-flex;
+	justify-content: space-between;
+	padding:10px 0;
 	border-bottom:1px solid #dedede;
-	margin-top:8px;
+	align-items:center ;
+	font-size:12px;
+	color:#263a55;
 }
-.phonenum .el-input-group__prepend{
-	border:none;
+.phonenum span{
+	flex: 0 0 50px;
 	border-right:1px solid #dedede;
-	background: none;
 }
-.phonenum .el-input-group--prepend .el-input__inner, .el-input-group__append{
-	height:32px;
-	border:none;
+.phonenum input {
+	flex: 1 1 auto;
+	text-align: center;
 }
 .login-password{
 	padding-top:18px;
@@ -173,10 +182,10 @@ export default {
 	color:#263a55;
 	font-weight: 600;
 }
-.login-password .loginpassword input{
-	height:60px;
+.login-password .loginpassword{
+	height:30px;
 	font-size:12px;
-	line-height:60px;
+	line-height:30px;
 	color:#263a55;
 	text-align: center;
 	border:none;

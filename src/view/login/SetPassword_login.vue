@@ -3,14 +3,13 @@
 		<h3 class="SetPassword-title">请设置新密码</h3>
 		<div class="SetPassword-set">
 			<label>设置新密码</label>
-			<el-input  type="password" placeholder="6~20位数字、字母或字符"  clearable v-model="SetPassword"></el-input>
+			<input  type="password" placeholder="6~20位数字、字母或字符"  clearable v-model="SetPassword">
 		</div>
 		<div class="SetPassword-sure">
 			<label>确认新密码</label>
-			<el-input  type="password" placeholder="6~20位数字、字母或字符"  clearable v-model="SurePassword"></el-input>
+			<input  type="password" placeholder="6~20位数字、字母或字符"  clearable v-model="SurePassword">
 		</div>
-		<!--<router-link tag="el-button" class="el-button--info" to="/login/restsuccess">确认</router-link>-->
-		<el-button type="info" :disabled="isdisabled" @click="resetPassword">确认</el-button>
+		<mt-button type="default" :disabled="isdisabled" @click="resetPassword">确认</mt-button>
 	</div>
 </template>
 
@@ -30,21 +29,24 @@ export default{
 		SetPassword:{
 			set:lodash.debounce(function(value){
 				if(value.trim().length<1){
-					this.$message({
+					this.$toast({
 			          message: '密码不能为空',
-			          type: 'error'
+			          position: 'bottom',
+  					  duration: 1500
 			      });
 			      this.setpaswordtrue=false;
 				}else if(!regExs.password.test(value)){
-					this.$message({
+					this.$toast({
 			          message: '密码格式不正确!',
-			          type: 'error'
+			          position: 'bottom',
+  					  duration: 1500
 			      });
 			      this.setpaswordtrue=false;
 				}else if(regExs.password.test(value)){
-					this.$message({
+					this.$toast({
 			          message: '密码正确!',
-			          type: 'success'
+			          position: 'bottom',
+  					  duration: 1500
 			      });
 			      this.setpaswordtrue=true;
 			      this.setpasword=value;
@@ -57,21 +59,24 @@ export default{
 		SurePassword:{
 			set:lodash.debounce(function(value){
 				if(value.trim().length<1){
-					this.$message({
+					this.$toast({
 			          message: '密码不能为空',
-			          type: 'error'
+			          position: 'bottom',
+  					  duration: 1500
 			      });
 			      this.confirmpaswordtrue=false;
 				}else if(!regExs.password.test(value)){
-					this.$message({
+					this.$toast({
 			          message: '密码格式不正确!',
-			          type: 'error'
+			          position: 'bottom',
+  					  duration: 1500
 			      });
 			      this.confirmpaswordtrue=false;
 				}else if(regExs.password.test(value)){
-					this.$message({
+					this.$toast({
 			          message: '密码正确!',
-			          type: 'success'
+			          position: 'bottom',
+  					  duration: 1500
 			      });
 			      this.confirmpaswordtrue=true;
 			      this.confirmpasword=value;
@@ -86,9 +91,10 @@ export default{
 				if(this.confirmpasword==this.setpasword){
 					return false;
 				}else{
-					this.$message({
+					this.$toast({
 				          message: '两次密码输入不一致',
-				          type: 'error'
+				          position: 'bottom',
+  					      duration: 1500
 				      });
 					return true;
 				}
@@ -125,7 +131,6 @@ export default{
 	margin:0 0 56px 0;
 	font-size:22px;
 	line-height:22px;
-	font-weight: 500;
 }
 .SetPassword-set{
 	display: flex;

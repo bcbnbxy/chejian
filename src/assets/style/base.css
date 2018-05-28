@@ -42,13 +42,11 @@ optgroup{font-weight:bold}
 table{border-collapse:collapse;border-spacing:0}
 td,th{padding:0}
 /*****************************************以上是重置样式部分***********************************************/
-.el-button--info{
+.mint-button--default{
 	width:100%;
-	height:43px;
-	border:none;
-	color:#fff;
-	font-size:16px;
-	background: #263a55;
+	height:44px;
+	background: #263a55 !important;
+	color:#fff !important;
 }
 .hideLeft {
     opacity: 0.75;
@@ -66,6 +64,9 @@ td,th{padding:0}
 		color:#dedede;
 		font-weight: normal;
 	}
-.v-link-active>i,.v-link-active>span{
-	color:#263a55;
+.v-link-active>span{
+	color:#0061ff;
+}
+.v-link-active{
+	border-top:1px solid #0061ff !important;
 }

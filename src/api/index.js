@@ -59,7 +59,6 @@ axios.interceptors.request.use(config => {
 			config.headers = {
 					'Content-Type':'application/x-www-form-urlencoded'
 			}
-			console.log(config)
       return config
 }, error => {
     return Promise.reject(error)

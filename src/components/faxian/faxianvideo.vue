@@ -1,111 +1,136 @@
 <template>
-	<div class="video">
-		<div class="video-wrap">
-			<p>我发布了新的视频，欢迎分享、评论欢迎转发评论、风驰电池是看奥迪、玛莎拉蒂得见。</p>
-			<img width="50" height="50" src="../../assets/img/play.png" class="playbtn"/>
-			<div class="video-wrap-bottom">
-				<p><i class="iconfont icon-bofangshu"></i><span>38万</span></p>
-				<p>关注</p>
-			</div>
+	<div class="fourpicture">
+		<div class="fourpicture-avatar">
+			<div class="fourpicture-avatar-left"><img src="../../assets/img/faxianimg/avatar.png" width="46" height="46" style="border-radius: 50%;"/><p><b>婉婉婉</b><span>5月22日</span></p></div>
+			<div class="fourpicture-avatar-right"><p style="">+关注</p><p style='display:none;background: #fff;border:1px solid #ff481d;color:#ff481d;'>已关注</p></div>
 		</div>
-		<div class="video-title">
-			<div class="video-title-left">
-				<img src="../../assets/img/Avatarsample.png" width="33" height="33"/><span>用户1234</span>				
+		<div class="fourpicture-content">
+			<div class="video-box">
+				<img src="../../assets/img/faxianimg/playbtn.png" class="playbtn"/>
+				<img src="../../assets/img/faxianimg/car1.png"/>
 			</div>
-			<div class="video-title-right">
-				<p><i class="iconfont icon-dianzan-yuanshijituantubiao"></i><span>3565</span></p>
-				<p><i class="iconfont icon-pinglun"></i><span>3565</span></p>
-				<p><i class="iconfont icon-fenxiang11"></i><span>3565</span></p>
-			</div>
+			<p>测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试</p>
 		</div>
+		<div class="fourpicture-title">
+			<p><i class="iconfont icon-xin"></i><span>236</span></p>
+			<p><i class="iconfont icon-pinglun"></i><span>365</span></p>
+			<p><b style="font-size:30px;position: relative;top:-16px;" @click="more">...</b></p>
+		</div>
+		<ul v-show="$store.state.faxian.popupmean_more" class="popupmean-more" @touchmove.prevent>
+			<li @click="showshare">转发</li>
+			<li @click="popupmeanreport">举报</li>
+			<li>减少推荐此类内容</li>
+		</ul>
 	</div>
 </template>
 
 <script>
+export default{
+	methods:{
+		more:function(){
+			this.$store.commit('changepopupmean');
+			this.$store.commit('changepopupmean_more');
+		},
+		popupmeanreport:function(){
+			this.$store.commit('changepopupmean_more');
+			this.$store.commit('changereport');
+		},
+		showshare:function(){
+			this.$store.commit('changepopupmean_more');
+			this.$store.commit('changeshare');
+		}
+	}
+}
 </script>
 
 <style>
-.video-wrap{
+.fourpicture{
+	background: #fff;
+	padding:0 0.48rem;
+	margin-bottom:0.3rem;
+}
+.fourpicture-avatar{
+	padding-top:0.81rem;
+	height:2.7rem;
+}
+.fourpicture-avatar-left{
+	float: left;
+	display: flex;
+	display: -webkit-flex;
+}
+.fourpicture-avatar-left img{
+	margin-right:0.51rem;
+}
+.fourpicture-avatar-left p{
+	display: flex;
+	display: -webkit-flex;
+	flex-direction: column;
+	font-size:0.42rem;
+	color:#222;
+	font-weight: 500;
+	justify-content: space-around;
+}
+.fourpicture-avatar-left p span{
+	font-size:0.3rem;
+	color:#666;
+}
+.fourpicture-avatar-right{
+	float:right;
+	padding-top:0.3rem;
+}
+.fourpicture-avatar-right p{
+	padding:0.15rem 0.36rem;
+	background: #ff481d;
+	color:#fff;
+	font-size:0.3rem;
+	border-radius: 15px;
+}
+.fourpicture-content p{
+	line-height:0.54rem;
+	font-size:0.36rem;
+	color:#333;
+	margin:0;
+	padding:0;
+	overflow:hidden;
+	text-overflow:ellipsis;
+	display:-webkit-box;
+	-webkit-box-orient:vertical;
+	-webkit-line-clamp:2;
+}
+.video-box{
 	width:100%;
-	height:210px;
-	background: url(../../assets/img/video.png) center no-repeat;
-	background-size:100% 210px;
-	padding:3px 12px;
+	margin-bottom:0.24rem;
 	position: relative;
 }
-.video-wrap>p{
-	font-size:14px;
-	color:#fff;
-	line-height:22px;
-}
-.video-wrap-bottom{
+.video-box .playbtn{
 	position: absolute;
-	left:0;
-	bottom:11px;
+	left:50%;
+	top:50%;
+	margin-left:-0.8rem;
+	margin-top:-0.8rem;
+	width:1.6rem;
+	height:1.6rem;
+	display: block;
+}
+.video-box img{
 	width:100%;
-	display: flex;
-	display: -webkit-flex;
-	justify-content: space-between;
-	align-items: flex-end;
-	padding:0 12px;
+	display: block;
 }
-.video-wrap-bottom>p:nth-child(2){
-	padding:5px 15px;
-	background:#263a55;
-	color:#fff;
-	border-radius: 4px;
-	font-size:9px;
-}
-.video-wrap-bottom>p:nth-child(1){
-	font-size:12px;
-	color:#fff;
-}
-.video-wrap-bottom>p:nth-child(1) i{
-	vertical-align: middle;
-	font-size:16px;
-	margin-right:2px;
-}
-.playbtn{
-	position: absolute;
-	left:0;
-	top:0;
-	bottom:0;
-	right:0;
-	margin:auto;
-}
-.video-title{
-	width:100%;
-	height:50px;
-	background: #fff;
-	display: flex;
-	display: -webkit-flex;
-	justify-content: space-between;
-	align-items: center;
-	padding:0 12px;
-}
-.video-title-left{
-	flex: 1 0 auto;
-}
-.video-title-left>img{
-	vertical-align: middle;
-	font-size:11px;
-	margin-right:3px;
-	color:#333;
-}
-.video-title-right{
-	flex: 1 1 auto;
+.fourpicture-title{
+	height:1.5rem;
 	display: flex;
 	display: -webkit-flex;
 	justify-content: flex-end;
-	font-size:8px;
+	padding-top:0.36rem;
 }
-.video-title-right p{
-	margin-left:18px;
-	color:#ababab;
+.fourpicture-title p{
+	font-size:0.3rem;
+	color:#666;
+	margin-left:0.6rem;
 }
-.video-title-right p i{
-	font-size:20px;
+.fourpicture-title p i{
 	vertical-align: middle;
-	margin-right:3px;
+	font-size:0.6rem;
+	margin-right:0.12rem;
 }
 </style>

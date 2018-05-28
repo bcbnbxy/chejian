@@ -7,14 +7,11 @@ import '@/assets/style/base.css'
 import '@/assets/style/font/iconfont.css'
 import '@/assets/style/font/iconfont.js'
 import store from './store/index.js'
-import { Button,Message,Input,Select,Option,} from 'element-ui'
+import MintUI from 'mint-ui'
+import 'mint-ui/lib/style.css'
+Vue.use(MintUI);
 // 引用API文件
 import api from './api/index.js'
-Vue.use(Button)
-Vue.use(Input)
-Vue.use(Select)
-Vue.use(Option)
-Vue.prototype.$message = Message;
 // 将API方法绑定到全局
 Vue.prototype.$api = api
 Vue.config.productionTip = false

@@ -12,6 +12,7 @@ import Restpassword from '@/view/login/restpassword'
 import Setpassword_login from '@/view/login/SetPassword_login'
 import RestSuccess from '@/view/login/restsuccess'
 import Home from '@/view/home/home'
+import Nonetwork from '@/view/home/nonetwork'
 import Homeindex from '@/view/home_shouye/homeindex'
 import Faxian from '@/view/home_faxian/faxian'
 import PlayVideo from '@/view/home_faxian/playvideo'
@@ -60,14 +61,14 @@ export default new Router({
     	component:Home,
     	children:[{
     		path:'/',
-    		component:Homeindex
+    		component:Nonetwork
     	},{
     		path:'/faxian',
     		component:Faxian
+    	},{
+    		path:'/nonetwork',
+    		component:Nonetwork
     	}]
-    },{
-    	path:'/faxian/playvideo',
-    	component:PlayVideo
     }
   ]
 })

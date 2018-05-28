@@ -7,57 +7,67 @@
 			<router-view></router-view>
 		</div>
 		<footer class="footer">
-			<router-link to="/home" tag="div" ><i class="iconfont icon-shouye"></i><span>首页</span></router-link>
-			<router-link to="/faxian" tag="div"><i class="iconfont icon-faxian"></i><span>发现</span></router-link>
-			<div><i class="iconfont icon-pengyou"></i><span>车友</span></div>
-			<div><i class="iconfont icon-weibiaoti-_huabanfuben"></i><span>我的</span></div>
+			<router-link to="/home" tag="div" ><img src="../../assets/img/faxianimg/home.png"/><span>首页</span></router-link>
+			<router-link to="/faxian" tag="div"><img src="../../assets/img/faxianimg/found.png"/><span>发现</span></router-link>
+			<div><img src="../../assets/img/faxianimg/carfrend.png"/><span>车友</span></div>
+			<div><img src="../../assets/img/faxianimg/my.png"/><span>我的</span></div>
 		</footer>
 	</div>
 </template>
 <script>
 import HomeHead from './home_head'
-export default{
-	components:{HomeHead},
+export default {
+	components:{HomeHead}
 }
 </script>
 
 <style>
 .home-wrap{
+	width:100%;
 	height:100%;
 	display: flex;
 	display: -webkit-flex;
 	flex-direction: column;
 	background: #f4f4f4;
+	overflow: hidden;
 }
 .home-head{
-	height:44px;
+	height:1.32rem;
+	background: url(../../assets/img/faxianimg/headbg.png) center no-repeat;
 }
 .home-main{
 	flex:1;
 	overflow: auto;
 }
 ::-webkit-scrollbar{
-	display: none;/*隐藏滚轮*/	
+	display: none;
 }
 .footer{
-	height:50px;
+	height:1.45rem;
 	background: #fff;
-	display: flex;
-	display: -webkit-flex;
-	justify-content: space-between;
-	padding:0 35px;
-	padding-top:6px;
-	border-top:1px solid #dedede;
+	padding:0 0.48rem 0 0.48rem;
+	background:#f8f8f8;
+	border-top:1px solid #dcdcdc;
 }
 .footer>div{
+	float: left;
+	width:25%;
 	display: flex;
 	display: -webkit-flex;
 	flex-direction: column;
+	justify-content: space-between;
 	align-items: center;
-	font-size:12px;
-	color:#a9a9a9;
+	height:1.44rem;
+	padding:0.24rem 0 0.12rem 0;
+	border-top:1px solid #dcdcdc;
+	position: relative;
+	top:-1px;
 }
-.footer>div>i{
-	font-size:20px;
+.footer>div>img{
+	max-width:0.6rem;
+	max-height:0.6rem;
+}
+.footer>div>span{
+	font-size:0.24rem;
 }
 </style>

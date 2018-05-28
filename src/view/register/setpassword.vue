@@ -3,13 +3,14 @@
 	<div class="setpassword-title">请设置密码</div>
 	<div class="setpassword-set">
 		<label>设置密码</label>
-		<el-input type="password"  placeholder="6~20位数字、字母或字符" v-model="password" clearable></el-input>
+		<!--<mt-field  placeholder="6~20位数字、字母或字符" type="password" v-model="password"></mt-field>-->
+		<input placeholder="6~20位数字、字母或字符" type="password" v-model="password"/>
 	</div>
 	<div class="setpassword-sure">
 		<label>确认密码</label>
-		<el-input type="password" placeholder="请再次输入密码"  v-model="passwordsure" clearable></el-input>
+		<input placeholder="请再次输入密码" type="password" v-model="passwordsure"/>
 	</div>
-	<el-button  type="info"  style="margin-top:35px;" :disabled="isdisabled" @click="gocode">下一步</el-button>
+	<mt-button type="default" style="margin-top:35px;" :disabled="isdisabled" @click="gocode">下一步</mt-button>
 </div>
 </template>
 
@@ -31,15 +32,17 @@ let lodash = require('lodash')
 		methods:{
 			setpassword:function(){
 				if(this.$data.password.trim().length<1){
-					this.$message({
+					this.$toast({
 			          message: '密码不能为空',
-			          type: 'error'
+			          position: 'bottom',
+  					  duration: 1500
 			      });
 			      this.$data.isdisabled=true;
 			   }else if(!regExs.password.test(this.$data.password)){
-			   		this.$message({
+			   		this.$toast({
 			           message: '密码格式不正确',
-			           type: 'error'
+			           position: 'bottom',
+  					   duration: 1500
 			       });
 			       this.$data.isdisabled=true;
 			   }else if(this.$data.passwordsure!==this.$data.password){
@@ -51,21 +54,24 @@ let lodash = require('lodash')
 			},
 			surpassword:function(){
 				if(this.$data.passwordsure.trim().length<1){
-					this.$message({
+					this.$toast({
 			          message: '请设置密码',
-			          type: 'error'
+			          position: 'bottom',
+  					  duration: 1500
 			      });
 			      this.$data.isdisabled=true;
 			   }else if(!regExs.password.test(this.$data.passwordsure)){
-			   		this.$message({
+			   		this.$toast({
 			           message: '密码格式不正确',
-			           type: 'error'
+			           position: 'bottom',
+  					  duration: 1500
 			       });
 			       this.$data.isdisabled=true;
 			    }else if(this.$data.passwordsure!==this.$data.password){
-			    	this.$message({
+			    	this.$toast({
 			           message: '两次密码不一致',
-			           type: 'error'
+			           position: 'bottom',
+  					  duration: 1500
 			       });
 			    	this.$data.isdisabled=true;
 			    }else if(this.$data.passwordsure===this.$data.password){
@@ -115,7 +121,7 @@ let lodash = require('lodash')
 	font-size:12px;
 	color:#263a55;
 }
-.el-input__inner{
+.setpassword-set input,.setpassword-sure input{
 	border:none;
 	border-bottom:1px solid #dedede;
 	height:31px;
@@ -124,4 +130,13 @@ let lodash = require('lodash')
 	color:#263a55;
 	border-radius: 0;
 }
+/*.el-input__inner{
+	border:none;
+	border-bottom:1px solid #dedede;
+	height:31px;
+	line-height:31px;
+	font-size:12px;
+	color:#263a55;
+	border-radius: 0;
+}*/
 </style>

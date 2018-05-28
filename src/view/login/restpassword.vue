@@ -5,19 +5,21 @@
 			<div class="login-phonenum">
 				<h3>手机号码</h3>
 				<div class="phonenum">
-				  <el-input placeholder="请输入您的电话号码"  v-model="LoginName" class="input-with-select" clearable>
+				  <!--<el-input placeholder="请输入您的电话号码"  v-model="LoginName" class="input-with-select" clearable>
 				    <el-select v-model="select" slot="prepend" placeholder="区号" style="width:72px;padding:0;">
 				      <el-option label="86" value="1"></el-option>
 				    </el-select>
-				  </el-input>
+				  </el-input>-->
+				  <span>+86</span><input placeholder="请输入手机号" type="tel" v-model="LoginName"/>
 				</div>
 			</div>
 			<div class="restpassword-yzm">
 				<label>手机验证码</label>
-				<el-input class="loginpassword" type="text" placeholder="手机验证码"  v-model="YZM" clearable></el-input>
+				<input class="loginpassword" type="text" placeholder="手机验证码"  v-model="YZM"/>
 			</div>
 			<div class="getyzm"><span @click="sendcode">{{$store.state.login.sendmessage}}</span><span v-show="$store.state.login.yzmtrue">({{$store.state.login.sendcodetime}} s)</span></div>
-			<el-button type="info" :disabled="isdisabled" @click="gosetpassword">下一步</el-button>
+			<!--<el-button type="info" :disabled="isdisabled" @click="gosetpassword">下一步</el-button>-->
+			<mt-button type="default" :disabled="isdisabled" @click="gosetpassword">下一步</mt-button>
 		</div>
 	</div>
 </template>
@@ -39,21 +41,24 @@ export default{
 		LoginName:{
 			set:lodash.debounce(function(value){
 				if(value.trim().length<1){
-					this.$message({
+					this.$toast({
 			          message: '手机号不能为空',
-			          type: 'error'
+			          position: 'bottom',
+  					  duration: 1500
 			       });
 			       this.loginnametrue=false;
 				}else if(!regExs.mobile.test(value)){
-					this.$message({
+					this.$toast({
 			          message: '手机号格式不正确!',
-			          type: 'error'
+			          position: 'bottom',
+  					  duration: 1500
 			       });
 			       this.loginnametrue=false;
 				}else if(regExs.mobile.test(value)){
-					this.$message({
+					this.$toast({
 			          message: '手机号输入正确!',
-			          type: 'success'
+			          position: 'bottom',
+  					  duration: 1500
 			       });
 					this.loginnametrue=true;
 					this.loginname=value;
@@ -67,21 +72,24 @@ export default{
 		YZM:{
 			set:lodash.debounce(function(value){
 				if(value.trim().length<1){
-					this.$message({
+					this.$toast({
 			          message: '验证码不能为空',
-			          type: 'error'
+			          position: 'bottom',
+  					  duration: 1500
 			       });
 			       this.yzmtrue=false;
 				}else if(!regExs.yzm.test(value)){
-					this.$message({
+					this.$toast({
 			          message: '手机号格式不正确!',
-			          type: 'error'
+			          position: 'bottom',
+  					  duration: 1500
 			       });
 			       this.yzmtrue=false;
 				}else if(regExs.yzm.test(value)){
-					this.$message({
+					this.$toast({
 			          message: '验证码格式正确',
-			          type: 'success'
+			          position: 'bottom',
+  					  duration: 1500
 			       });
 					this.yzmtrue=true;
 					this.yzm=value;
@@ -111,9 +119,10 @@ export default{
 						self.$store.commit('changeyzmtrue');
 						self.$store.state.login.sendcodetimer=setInterval(getTotelNumber,1000)
 					}else{
-						this.$message({
+						this.$toast({
 				          message: r.errorMessage,
-				          type: 'error'
+				          position: 'bottom',
+  					      duration: 1500
 				       });
 					}
 				})
@@ -157,7 +166,7 @@ export default{
 	color:#263a55;
 	font-weight: 600;
 }
-.restpassword-yzm .loginpassword input{
+.restpassword-yzm .loginpassword{
 	height:40px;
 	font-size:12px;
 	line-height:40px;
@@ -183,16 +192,22 @@ export default{
 }
 .phonenum{
 	height:36px;
-	border-bottom:1px solid #dedede;
 	margin-top:8px;
+	display:flex;
+	display: -webkit-flex;
+	justify-content: space-between;
+	padding:10px 0;
+	border-bottom:1px solid #dedede;
+	align-items:center ;
+	font-size:12px;
+	color:#263a55;
 }
-.phonenum .el-input-group__prepend{
-	border:none;
+.phonenum span{
+	flex: 0 0 50px;
 	border-right:1px solid #dedede;
-	background: none;
 }
-.phonenum .el-input-group--prepend .el-input__inner, .el-input-group__append{
-	height:32px;
-	border:none;
+.phonenum input {
+	flex: 1 1 auto;
+	text-align: center;
 }
 </style>

@@ -5,24 +5,24 @@
 			<div class="bootpage-container">
 				<p>HI,欢迎使用车间</p>
 				<div class="bootpage-btngroup">
-					<router-link tag="el-button" class="el-button--info" to="/register">注册</router-link>
+					<router-link tag="mt-button" to="/register">注册</router-link>
 					<p>或</p>
-					<router-link tag="el-button" class="el-button--info" to="/login">登陆</router-link>
+					<router-link tag="mt-button"  to="/login">登陆</router-link>
 				</div>				
 			</div>
 		</div>
 	</div>
 </template>
 <script>
-	import RegLoginHead from'../../components/regsiter_login/reg_login_head'
-	export default{
-		components:{RegLoginHead},
-		methods:{
-			goregister:function(){
-				this.$router.push({path:'/register'});
-			}
+import RegLoginHead from'../../components/regsiter_login/reg_login_head'
+export default{
+	components:{RegLoginHead},
+	methods:{
+		goregister:function(){
+			this.$router.push({path:'/register'});
 		}
 	}
+}
 </script>
 <style>
 .bootpage{

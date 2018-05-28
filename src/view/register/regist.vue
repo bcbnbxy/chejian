@@ -4,13 +4,9 @@
 			<div class="register-form">
 				<p>手机号码</p>
 				<div class="phonenum">
-				  <el-input placeholder="请输入手机号" v-model="newUsername" class="input-with-select" ref="newUsername" autofocus>
-				    <el-select v-model="select" slot="prepend" placeholder="区号" style="width:72px;padding:0;">
-				      <el-option label="86" value="1"></el-option>
-				    </el-select>
-				  </el-input>
+				 	<span>+86</span><input placeholder="请输入手机号" type="tel" v-model="newUsername" ref="newUsername" autofocus/>
 				</div>
-				<el-button type="info"  style="margin:17px 0 20px 0;" :disabled="isdisabled" @click="gosetpassword">下一步</el-button>
+				<mt-button type="default" style="margin:17px 0 20px 0;" :disabled="isdisabled" @click="gosetpassword">下一步</mt-button>
 				<div class="userAgreement">点击“下一步”即代表您同意《车间服务协议》</div>
 			</div>
 			<div class="thirdparty">
@@ -47,14 +43,16 @@ export default{
 	methods:{
 		checkUsername:function(){
 			if(this.$data.newUsername.trim()<1){
-				this.$message({
+				this.$toast({
 		          message: '账号不能为空!',
-		          type: 'error'
+		          position: 'bottom',
+  			      duration: 1500
 		       });
 			}else if(!regExs.mobile.test(this.$data.newUsername)){
-				this.$message({
+				this.$toast({
 		          message: '手机号格式不正确!',
-		          type: 'error'
+		          position: 'bottom',
+  			      duration: 1500
 		       });
 			}else{	
 				let parm={action:'checkRegister',areacode:this.$store.state.register.userInfo.areaCodes,mobileno:this.$data.newUsername};
@@ -65,15 +63,17 @@ export default{
 				     		that.$store.commit('getphonenum',that.$data.newUsername);
 				     		that.$data.isdisabled=false;
 				     	}else{
-				     		that.$message({
+				     		that.$toast({
 					          message: '您的手机号已经被注册，请更换手机号!',
-					          type: 'error'
+					          position: 'bottom',
+  			                  duration: 1500
 					        });
 				     	}
 				     }else{
-				     	that.$message({
+				     	that.$toast({
 				          message: r.errorMessage,
-				          type: 'error'
+				          position: 'bottom',
+  			              duration: 1500
 				        });
 				     }
 				})
@@ -98,84 +98,87 @@ export default{
 		padding:0 32px;
 		padding-top:118px;
 	}
-	.register-title{
-		font-size:24px;
-		color:#263a55;
-		line-height:24px;
-		height:24px;
-	}
-	.register-form{
-		margin-top:77px;
-	}
-	.register-form>p{
-		font-size:12px;
-		height:12px;
-		line-height:12px;
-		color:#263a55;
-	}
-	.phonenum{
-		height:36px;
-		border-bottom:1px solid #dedede;
-		margin-top:8px;
-	}
-	.phonenum .el-input-group__prepend{
-		border:none;
-		border-right:1px solid #dedede;
-		background: none;
-	}
-	.phonenum .el-input-group--prepend .el-input__inner, .el-input-group__append{
-		height:32px;
-		border:none;
-	}
-	.demo-input.demo-zh-CN .el-select .el-input{
-		width:72px;
-	}
-	.userAgreement{
-		text-align: center;
-		color:#263a55;
-		font-size:12px;
-	}
-	.el-button.is-disabled{
-		background: #ccc;
-		color:#fff;
-	}
-	.thirdparty{
-		padding-top:85px;
-	}
-	.thirdparty-title{
-		height:12px;
-		font-size:12px;
-		line-height:12px;
-		color:#263a55;
-		display: flex;
-		display: -webkit-flex;
-		align-items: center;
-	}
-	.thirdparty-title i{
-		height:1px;
-		background: #dedede;
-		flex:1 1 auto;
-	}
-	.thirdparty-title span{
-		margin:0 6px;
-		color:#949494;
-	}
-	.thirdparty-icon{
-		display: flex;
-		display: -webkit-flex;
-		justify-content: space-around;
-		margin-top:28px;
-	}
-	.thirdparty-icon>p{
-		display: flex;
-		display: -webkit-flex;
-		flex-direction: column;
-		align-items: center;
-		font-size:12px;
-		color:#949494;
-	}
-	.thirdparty-icon>p svg{
-		font-size:33px;
-		margin-bottom:8px;
-	}
+.register-title{
+	font-size:24px;
+	color:#263a55;
+	line-height:24px;
+	height:24px;
+}
+.register-form{
+	margin-top:69px;
+}
+.register-form>p{
+	font-size:12px;
+	height:27px;
+	line-height:27px;
+	color:#263a55;
+}
+.phonenum{
+	height:38px;
+	display:flex;
+	display: -webkit-flex;
+	justify-content: space-between;
+	padding:10px 0;
+	border-bottom:1px solid #dedede;
+	align-items:center ;
+	font-size:12px;
+	color:#263a55;
+}
+.phonenum span{
+	flex: 0 0 50px;
+	border-right:1px solid #dedede;
+}
+.phonenum input {
+	flex: 1 1 auto;
+	text-align: center;
+}
+.userAgreement{
+	text-align: center;
+	color:#263a55;
+	font-size:12px;
+}
+.thirdparty{
+	padding-top:85px;
+}
+.thirdparty-title{
+	height:12px;
+	font-size:12px;
+	line-height:12px;
+	color:#263a55;
+	display: flex;
+	display: -webkit-flex;
+	align-items: center;
+}
+.thirdparty-title i{
+	height:1px;
+	background: #dedede;
+	flex:1 1 auto;
+}
+.thirdparty-title span{
+	margin:0 6px;
+	color:#949494;
+}
+.thirdparty-icon{
+	display: flex;
+	display: -webkit-flex;
+	justify-content: space-around;
+	margin-top:28px;
+}
+.thirdparty-icon>p{
+	display: flex;
+	display: -webkit-flex;
+	flex-direction: column;
+	align-items: center;
+	font-size:12px;
+	color:#949494;
+}
+.thirdparty-icon>p svg{
+	font-size:33px;
+	margin-bottom:8px;
+}
+	
+.phonenum .mint-cell-title{
+	width:50px !important;
+	border-right:1px solid #dedede;
+}
 </style>

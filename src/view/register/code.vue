@@ -65,9 +65,11 @@ export default{
             var that=this;
             this.$api('/Execute.do', parm).then(function(r){
             	if(r.errorCode==0){
-            		that.$message({
+            		that.$toast({
 			          message: '验证码已发送',
-			          type: 'success'
+			          iconClass: 'icon icon-success',
+			          position: 'bottom',
+  			          duration: 1500
 			       });
             	}
             });
@@ -89,7 +91,6 @@ export default{
 	}
 }
 </script>
-
 <style>
 .code{
 	width:100%;

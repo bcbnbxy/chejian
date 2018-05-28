@@ -4,7 +4,7 @@
 			<i class="iconfont icon-queren"></i>
 			<span>密码重置成功</span>
 		</div>
-		<router-link class="el-button--info" tag="el-button" to="/login">去登陆</router-link>
+		<router-link tag="mt-button" type="default" to="/login">去登陆</router-link>
 	</div>
 </template>
 

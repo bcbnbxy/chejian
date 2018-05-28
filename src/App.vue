@@ -5,6 +5,7 @@
 </template>
 
 <script>
+
 //let platform="";
 //document.addEventListener( "plusready",function(){
 //			alert(plus.device.uuid);

@@ -3,7 +3,7 @@
 		<div class="choosecity-title">填写基本信息</div>
 		<div class="nickname">
 			<label>昵称</label>
-			<el-input type="text" placeholder="用户123" clearable @blur="checknickname" v-model="nickname" autofocus="true" ref="nickname"></el-input>
+			<input type="text" placeholder="用户123"  @blur="checknickname" v-model="nickname" ref="nickname"/>
 		</div>
 		<div class="area-wrap">
 			<label>所在地区</label>
@@ -27,7 +27,7 @@
 		        </div>
 		    </section>
 		</div>
-		<el-button type="info" style="margin-top:36px;" :disabled="isdisabled" @click="gologin">去登陆</el-button>
+		<mt-button type="default" style="margin-top:36px;" :disabled="isdisabled" @click="gologin">去登陆</mt-button>
 	</div>
 </template>
 
@@ -88,9 +88,10 @@
     			that.info=r.data.provinces;
     			that.$store.commit('setGetprovince');
     		}else {
-    			that.$message({
+    			that.$toast({
 		          message: r.errorMessage,
-		          type: 'error'
+		          position: 'bottom',
+  				  duration: 1500
 		        });
     		}
     	})
@@ -127,15 +128,17 @@
     },
     checknickname:function(){
     	if(this.nickname.trim().length<1){
-    		this.$message({
+    		this.$toast({
 	          message: '昵称不能为空！',
-	          type: 'error'
+	          position: 'bottom',
+  			  duration: 1500
 	        });
 	        this.$refs.nickname.$el.children[0].focus();
     	}else if(!regExs.nickname.test(this.nickname)){
-    		this.$message({
+    		this.$toast({
 	          message: '输入的昵称格式不正确,请重新输入',
-	          type: 'error'
+	          position: 'bottom',
+  			  duration: 1500
 	       });
 	       this.nickname='';
 	       this.$refs.nickname.$el.children[0].focus();
@@ -147,17 +150,19 @@
     					that.checknick=true;
     					that.$store.commit('getnickname',that.nickname);
     				}else{
-    					that.$message({
+    					that.$toast({
 				          message: '该昵称已经被注册,请重新输入',
-				          type: 'error'
+				          position: 'bottom',
+  			              duration: 1500
 				       });
 				        that.nickname='';
 	       				that.$refs.nickname.$el.children[0].focus();
     				}
     			}else{
-					that.$message({
+					that.$toast({
 			          message: r.errorMessage,
-			          type: 'error'
+			          position: 'bottom',
+  			          duration: 1500
 			       });
     			}
     		})
@@ -169,15 +174,18 @@
 		parm.action="register";
 		this.$api('/Execute.do',this.$store.state.register.userInfo).then(function(r){
 			if(r.errorCode=='0'){
-				that.$message({
+				that.$toast({
 		          message: '注册成功',
-		          type: 'success'
+                  iconClass: 'icon icon-success',
+                  position: 'bottom',
+  			      duration: 1500
 		        });
 		        that.$router.push('/login');
 			}else{
-				that.$message({
+				that.$toast({
 			          message: r.errorMessage,
-			          type: 'error'
+			          position: 'bottom',
+  			          duration: 1500
 		        });	
 			}
 		})
