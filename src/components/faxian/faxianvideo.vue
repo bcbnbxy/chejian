@@ -1,22 +1,22 @@
 <template>
 	<div class="fourpicture">
 		<div class="fourpicture-avatar">
-			<div class="fourpicture-avatar-left"><img src="../../assets/img/faxianimg/avatar.png" width="46" height="46" style="border-radius: 50%;"/><p><b>婉婉婉</b><span>5月22日</span></p></div>
-			<div class="fourpicture-avatar-right"><p style="">+关注</p><p style='display:none;background: #fff;border:1px solid #ff481d;color:#ff481d;'>已关注</p></div>
+			<div class="fourpicture-avatar-left"><img :src="data.avatar" width="46" height="46" style="border-radius: 50%;"/><p><b>{{data.username}}</b><span>{{data.time}}</span></p></div>
+			<div class="fourpicture-avatar-right"><p v-if="data.attention" style='background: #fff;border:1px solid #ff481d;color:#ff481d;'>已关注</p><p v-else>+关注</p></div>
 		</div>
 		<div class="fourpicture-content">
 			<div class="video-box">
 				<img src="../../assets/img/faxianimg/playbtn.png" class="playbtn"/>
-				<img src="../../assets/img/faxianimg/car1.png"/>
+				<img :src="data.mainpic"/>
 			</div>
-			<p>测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试</p>
+			<p>{{data.content}}</p>
 		</div>
 		<div class="fourpicture-title">
 			<p><i class="iconfont icon-xin"></i><span>236</span></p>
-			<p><i class="iconfont icon-pinglun"></i><span>365</span></p>
-			<p><b style="font-size:30px;position: relative;top:-16px;" @click="more">...</b></p>
+			<router-link tag="p" to="/detailpage"><i class="iconfont icon-pinglun"></i><span>365</span></router-link>
+			<p><b style="font-size:30px;position: relative;top:-16px;" @click="more(index)">...</b></p>
 		</div>
-		<ul v-show="$store.state.faxian.popupmean_more" class="popupmean-more" @touchmove.prevent>
+		<ul v-show="$store.state.faxian.popupmean_more == index" class="popupmean-more" @touchmove.prevent>
 			<li @click="showshare">转发</li>
 			<li @click="popupmeanreport">举报</li>
 			<li>减少推荐此类内容</li>
@@ -25,11 +25,19 @@
 </template>
 
 <script>
-export default{
+export default{	
+	props:{
+		data:{
+			type: Object
+		},
+		index:{
+			type:Number
+		}
+	},
 	methods:{
-		more:function(){
+		more:function($index){
 			this.$store.commit('changepopupmean');
-			this.$store.commit('changepopupmean_more');
+			this.$store.commit('changepopupmean_more',$index);
 		},
 		popupmeanreport:function(){
 			this.$store.commit('changepopupmean_more');

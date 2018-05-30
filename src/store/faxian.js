@@ -1,7 +1,7 @@
 export default {
 	state : {
 		popupmean:false,
-		popupmean_more:false,
+		popupmean_more:-1,
 		report:false,
 		pic_text_video:false,
 		share:false
@@ -10,8 +10,8 @@ export default {
 		changepopupmean(state){
 			state.popupmean=!state.popupmean;
 		},
-		changepopupmean_more(state){
-			state.popupmean_more=!state.popupmean_more;
+		changepopupmean_more(state,index){
+			state.popupmean_more=index;
 		},
 		changereport(state){
 			state.report=!state.report;

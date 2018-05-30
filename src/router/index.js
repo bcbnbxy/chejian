@@ -15,7 +15,8 @@ import Home from '@/view/home/home'
 import Nonetwork from '@/view/home/nonetwork'
 import Homeindex from '@/view/home_shouye/homeindex'
 import Faxian from '@/view/home_faxian/faxian'
-import PlayVideo from '@/view/home_faxian/playvideo'
+import Search from '@/components/common/search'
+import Detailpage from '@/view/home_faxian/detailpage'
 Vue.use(Router)
 export default new Router({
 	linkActiveClass:'v-link-active',
@@ -68,6 +69,12 @@ export default new Router({
     	},{
     		path:'/nonetwork',
     		component:Nonetwork
+    	},{
+    		path:'/search',
+    		component:Search
+    	},{
+    		path:'/detailpage',
+    		component:Detailpage
     	}]
     }
   ]

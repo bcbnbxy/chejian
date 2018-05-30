@@ -1,31 +1,27 @@
 <template>
 	<div class="head">
 		<div class="faxianhead">
-			<p @click="$store.commit('toggleSearchStatus',true)"><i class="iconfont icon-sousuo"></i></p>
+			<router-link tag="p" to="/search"><i class="iconfont icon-sousuo"></i></router-link>
 			<p><span style="margin-right:16px;">最新</span><span>关注</span></p>
 			<p @click="showpictextvideo"><i class="iconfont icon-zhaoxiangji"></i></p>
 			<div class="pic-text-video" v-show="$store.state.faxian.pic_text_video">
 				<p>文图</p>
 				<p>视频</p>
 			</div>
-			<Search v-show="$store.state.common.searchstatus"></Search>
 		</div>
 	</div>
 </template>
 <script>
-	import Search from '../../components/common/search'
 export default {
-	components:{Search},
 	methods:{
 		showpictextvideo:function(){
 			this.$store.commit('changepopupmean');
 			this.$store.commit('changepictextvideo');
-		}
+		}		
 	}
 }
 </script>
-
-<style>
+<style scoped>
 .head{
 	height:100%;
 }
