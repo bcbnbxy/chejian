@@ -17,7 +17,7 @@
 					</div>
 					<p>把赛事赛程的子页面补充上文档里面表明子页面是上海团队负责人做的部分客户端不用管。</p>
 				</div>
-				<div class="pic-detail-zan">
+				<router-link to="/praise" tag="div" class="pic-detail-zan">
 					<div class="avatar-list">
 						<img src="../../assets/img/faxianimg/avatar.png"/>
 						<img src="../../assets/img/faxianimg/avatar.png"/>
@@ -28,7 +28,7 @@
 					<div class="dianzan-renshu">
 						<p>3955人觉得很赞</p><i class="iconfont icon-arrow-right-copy-copy-copy"></i>
 					</div>
-				</div>
+				</router-link>
 			</div>
 			<div class="detail-reply">
 				<Reply-list></Reply-list>

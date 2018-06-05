@@ -5,20 +5,14 @@
 			<div class="login-phonenum">
 				<h3>手机号码</h3>
 				<div class="phonenum">
-				  <!--<el-input placeholder="请输入您的电话号码"  v-model="LoginName" class="input-with-select" clearable>
-				    <el-select v-model="select" slot="prepend" placeholder="区号" style="width:72px;padding:0;">
-				      <el-option label="86" value="1"></el-option>
-				    </el-select>
-				  </el-input>-->
-				  <span>+86</span><input placeholder="请输入手机号" type="tel" v-model="LoginName"/>
+				  <span>+86</span><input placeholder="请输入手机号" type="tel" v-model="loginname" @keydown="LoginName"/>
 				</div>
 			</div>
 			<div class="restpassword-yzm">
 				<label>手机验证码</label>
-				<input class="loginpassword" type="text" placeholder="手机验证码"  v-model="YZM"/>
+				<input class="loginpassword" type="text" placeholder="手机验证码"  v-model="yzm" @keydown="YZM"/>
 			</div>
 			<div class="getyzm"><span @click="sendcode">{{$store.state.login.sendmessage}}</span><span v-show="$store.state.login.yzmtrue">({{$store.state.login.sendcodetime}} s)</span></div>
-			<!--<el-button type="info" :disabled="isdisabled" @click="gosetpassword">下一步</el-button>-->
 			<mt-button type="default" :disabled="isdisabled" @click="gosetpassword">下一步</mt-button>
 		</div>
 	</div>
@@ -38,68 +32,6 @@ export default{
 		}
 	},
 	computed:{
-		LoginName:{
-			set:lodash.debounce(function(value){
-				if(value.trim().length<1){
-					this.$toast({
-			          message: '手机号不能为空',
-			          position: 'bottom',
-  					  duration: 1500
-			       });
-			       this.loginnametrue=false;
-				}else if(!regExs.mobile.test(value)){
-					this.$toast({
-			          message: '手机号格式不正确!',
-			          position: 'bottom',
-  					  duration: 1500
-			       });
-			       this.loginnametrue=false;
-				}else if(regExs.mobile.test(value)){
-					this.$toast({
-			          message: '手机号输入正确!',
-			          position: 'bottom',
-  					  duration: 1500
-			       });
-					this.loginnametrue=true;
-					this.loginname=value;
-					this.$store.commit('changesendmsg','获取验证码')
-				}
-			},1000),
-			get:function(){
-				return this.loginname;
-			}
-		},
-		YZM:{
-			set:lodash.debounce(function(value){
-				if(value.trim().length<1){
-					this.$toast({
-			          message: '验证码不能为空',
-			          position: 'bottom',
-  					  duration: 1500
-			       });
-			       this.yzmtrue=false;
-				}else if(!regExs.yzm.test(value)){
-					this.$toast({
-			          message: '手机号格式不正确!',
-			          position: 'bottom',
-  					  duration: 1500
-			       });
-			       this.yzmtrue=false;
-				}else if(regExs.yzm.test(value)){
-					this.$toast({
-			          message: '验证码格式正确',
-			          position: 'bottom',
-  					  duration: 1500
-			       });
-					this.yzmtrue=true;
-					this.yzm=value;
-					this.$store.commit('changesendmsg','获取验证码')
-				}
-			},1000),
-			get:function(){
-				return this.yzm;
-			}
-		},
 		isdisabled:function(){
 			if(this.loginnametrue&&this.yzmtrue){
 				return false;
@@ -112,26 +44,75 @@ export default{
 		sendcode:function(){
 			if(this.$store.state.login.sendcodetrue){
 				var self=this;
-				this.$api('Execute.do',{action:"sendCheckCode4Reset",mobileno:this.loginname,areacode:'86'}).then(function(r){
+				self.$api('Execute.do',{action:"sendCheckCode4Reset",mobileno:this.loginname,areacode:'86'}).then(function(r){
 					if(r.errorCode==0){
 						self.$store.commit('sendcodetime');
 						self.$store.commit('changesendmsg',"验证码已发送");
 						self.$store.commit('changeyzmtrue');
 						self.$store.state.login.sendcodetimer=setInterval(getTotelNumber,1000)
 					}else{
-						this.$toast({
+						self.$toast({
 				          message: r.errorMessage,
 				          position: 'bottom',
-  					      duration: 1500
+					      duration: 1500
 				       });
 					}
-				})
-				
+				})				
 			}
 			function getTotelNumber() {
 		       	self.$store.commit('sendcodedjs');
 	        }
 		},
+		YZM:lodash.debounce(function(){
+				if(this.yzm.trim().length<1){
+					this.$toast({
+			          message: '验证码不能为空',
+			          position: 'bottom',
+  					  duration: 1500
+			       });
+			       this.yzmtrue=false;
+				}else if(!regExs.yzm.test(this.yzm)){
+					this.$toast({
+			          message: '手机号格式不正确!',
+			          position: 'bottom',
+  					  duration: 1500
+			       });
+			       this.yzmtrue=false;
+				}else if(regExs.yzm.test(this.yzm)){
+					this.$toast({
+			          message: '验证码格式正确',
+			          position: 'bottom',
+  					  duration: 1500
+			       });
+					this.yzmtrue=true;
+					this.$store.commit('changesendmsg','获取验证码')
+				}
+			},1500),
+		LoginName:lodash.debounce(function(){
+				if(this.loginname.trim().length<1){
+					this.$toast({
+			          message: '手机号不能为空',
+			          position: 'bottom',
+  					  duration: 1500
+			       });
+			       this.loginnametrue=false;
+				}else if(!regExs.mobile.test(this.loginname)){
+					this.$toast({
+			          message: '手机号格式不正确!',
+			          position: 'bottom',
+  					  duration: 1500
+			       });
+			       this.loginnametrue=false;
+				}else if(regExs.mobile.test(this.loginname)){
+					this.$toast({
+			          message: '手机号输入正确!',
+			          position: 'bottom',
+  					  duration: 1500
+			       });
+					this.loginnametrue=true;
+					this.$store.commit('changesendmsg','获取验证码')
+				}
+			},1000),
 		gosetpassword:function(){
 			this.$store.commit('restpasswordInfo',{checkcode:this.yzm,mobileno:this.loginname});
 			this.$router.push('/login/SetPassword_login')

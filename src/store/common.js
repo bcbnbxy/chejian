@@ -20,7 +20,7 @@ export default {
 			state.publicOption.uuid=uuid;
 		},
 		toggleSearchStatus(state, status) {
-	        state.searchstatus = status
-	    }
+	        state.searchstatus = status;
+	  }
 	}
 }

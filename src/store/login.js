@@ -23,7 +23,7 @@ export default {
 	            state.yzmtrue=false;
 	            state.sendcodetrue=true;
 				clearInterval(state.sendcodetimer);
-			}			
+			}
 		},
 		sendcodetime(state){
 			state.sendcodetrue=!state.sendcodetrue;

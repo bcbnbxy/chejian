@@ -64,7 +64,7 @@ export default {
 .searchhead{
 	width: 100%;
 	height:1.32rem;
-	background: url(../../assets/img/faxianimg/headbg.png) center no-repeat;
+	background: url(../../assets/img/faxianimg/headbg.png) center repeat;
 	padding:0.21rem 0.5rem;
 	font-size:0.42rem;
 	display: flex;

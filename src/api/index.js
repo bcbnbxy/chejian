@@ -53,7 +53,13 @@ var root='/customer'
 axios.defaults.timeout = 5000;
 axios.defaults.baseURL =root;
 axios.interceptors.request.use(config => {
-	    config.data =Object.assign(config.data,store.state.common.publicOption)
+			let publicOPtion=store.state.common.publicOption
+			if(localStorage.getItem("loginInfo")){				
+					publicOPtion.__mobileno__=JSON.parse(localStorage.getItem("loginInfo")).mobileno;
+			}else{
+				delete(publicOPtion.__mobileno__);
+			}
+	    config.data =Object.assign(config.data,publicOPtion)
 			config.data.__sign__=buildSign(config.data,config.data.__uuid__)
 			config.data=qs.stringify(config.data)
 			config.headers = {

@@ -5,7 +5,6 @@
 		</ul>
 	</div>
 </template>
-
 <script>
 	export default{
 		data(){
@@ -52,6 +51,9 @@
 	justify-content: flex-start;
 	align-items: center;
 	padding:0 0.1rem;
+}
+.user>ul li:last-child{
+	border-bottom:none;
 }
 .user>ul li img{
 	width:1rem;

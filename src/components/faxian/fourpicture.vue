@@ -1,7 +1,7 @@
 <template>
 	<div class="fourpicture">
 		<div class="fourpicture-avatar">
-			<div class="fourpicture-avatar-left"><img :src="data.avatar" width="46" height="46" style="border-radius: 50%;"/><p><b>{{data.username}}</b><span>{{data.time}}</span></p></div>
+			<div class="fourpicture-avatar-left"><router-link tag="div" to="/homepage"><img :src="data.avatar"/></router-link><p><b>{{data.username}}</b><span>{{data.time}}</span></p></div>
 			<div class="fourpicture-avatar-right"><p v-if="data.attention">+关注</p><p v-else style='background: #fff;border:1px solid #ff481d;color:#ff481d;'>已关注</p></div>
 		</div>
 		<div class="fourpicture-content">
@@ -67,6 +67,9 @@
 }
 .fourpicture-avatar-left img{
 	margin-right:0.51rem;
+	width:1.42rem;
+	height:1.42rem;
+	border-radius: 50%;
 }
 .fourpicture-avatar-left p{
 	display: flex;

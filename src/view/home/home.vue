@@ -3,11 +3,11 @@
 		<div class="home-main">
 			<router-view></router-view>
 		</div>
-		<footer class="footer" v-show="$route.path.indexOf('/home') > -1||$route.path.indexOf('/faxian') > -1">
+		<footer class="footer" v-show="$route.path.indexOf('/home') > -1||$route.path.indexOf('/faxian') > -1 || $route.path.indexOf('/personal') > -1">
 			<router-link to="/home" tag="div" ><img src="../../assets/img/faxianimg/home.png"/><span>首页</span></router-link>
 			<router-link to="/faxian" tag="div"><img src="../../assets/img/faxianimg/found.png"/><span>发现</span></router-link>
 			<div><img src="../../assets/img/faxianimg/carfrend.png"/><span>车友</span></div>
-			<div><img src="../../assets/img/faxianimg/my.png"/><span>我的</span></div>
+			<router-link to="/personal" tag="div"><img src="../../assets/img/faxianimg/my.png"/><span>我的</span></router-link>
 		</footer>
 		<div v-show="$store.state.faxian.popupmean" class="popupmean" @touchmove.prevent @click.self="popupmeanhidden">
 			<dl class="popupmean-report" v-show="$store.state.faxian.report" >
@@ -32,9 +32,7 @@
 	</div>
 </template>
 <script>
-import HomeHead from './home_head'
 export default {
-	components:{HomeHead},
 	methods:{
 		popupmeanhidden:function(e){
 			if(this.$store.state.faxian.popupmean_more !== -1){
