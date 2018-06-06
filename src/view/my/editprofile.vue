@@ -139,20 +139,51 @@ export default {
       return canvas;
     },
     //提交上传函数
-    postImg(file) {
-    	console.log(file);
-    	 var storeAs = 'upload-file';
-     	const client = new OSS.Wrapper({
-	        region:'https://chd-app.oss-cn-shenzhen.aliyuncs.com',
-	        accessKeyId: 'LTAI1Ej1pfnpLaDH',
-	        accessKeySecret: 'WQbS0g4AdDKVCr5T4m4nvUSdo35AVT',
-	        bucket: '/headphoto'
-	    })
-     	client.multipartUpload(storeAs, file).then(function (result) {
-            console.log(result);
-          }).catch(function (err) {
-            console.log(err);
-          });
+    postImg(dataUrl) {
+    	 var base64 = dataUrl.split(',')[1];
+    	 var fileType = dataUrl.split(';')[0].split(':')[1];
+    	 var blob = this.toBlob(base64,fileType);
+    	 console.log(blob.name);
+    	 var reader = new FileReader();
+	    reader.readAsArrayBuffer(blob);
+	    reader.onload = function (event) {	    
+	        // 配置
+	        var client = new OSS.Wrapper({
+	            region: 'headphoto',
+	            accessKeyId: 'LTAI1Ej1pfnpLaDH',
+	            accessKeySecret: 'WQbS0g4AdDKVCr5T4m4nvUSdo35AVT',
+	            bucket: 'chd-app.oss-cn-shenzhen'
+	        });
+        var date = new Date();
+        var time = ''+date.getFullYear()+(date.getMonth()+1)+date.getDate();
+        var storeAs = 'Uploads/file/'+time+'/'+date.getTime()+'.'+blob.type.split('/')[1];        
+        // arrayBuffer转Buffer
+        var buffer = new OSS.Buffer(event.target.result);
+        client.put(storeAs, buffer).then(function(result){
+            console.log(result)
+        })
+//  	var storeAs = 'upload-file';
+//   	const client = new OSS.Wrapper({
+//	        region:'chd-app.oss-cn-shenzhen.aliyuncs.com',
+//	        accessKeyId: 'LTAI1Ej1pfnpLaDH',
+//	        accessKeySecret: 'WQbS0g4AdDKVCr5T4m4nvUSdo35AVT',
+//	        bucket: 'headphoto'
+//	    })
+//   	client.multipartUpload(storeAs, blob).then(function (result) {
+//          console.log(result);
+//        }).catch(function (err) {
+//          console.log(err);
+//        });
+		}
+    },
+    toBlob(urlData,fileType){
+        var bytes=window.atob(urlData),
+            n=bytes.length,
+            u8arr=new Uint8Array(n);
+        while(n--){
+            u8arr[n]=bytes.charCodeAt(n);
+        }
+        return new Blob([u8arr],{type:fileType});
     }
   }
 };
