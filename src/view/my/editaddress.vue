@@ -19,7 +19,7 @@
 			<input type="text" value="广东省深圳市龙华新区" readonly/>
 			<i class="iconfont icon-arrow-right-copy-copy-copy"></i>
 		</li>
-		<li class="">
+		<li>
 			<label>详细地址</label>
 			<textarea>卫东龙商务大厦B栋611</textarea>
 		</li>

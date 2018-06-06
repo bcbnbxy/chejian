@@ -20,7 +20,13 @@
 				<b></b>
 			</div>
 			<div class="homepage-container-bottom">
-				<component :is="currentView" ></component>
+				<!--<component :is="currentView" ></component>-->
+				<div class="picture">
+					<picture></picture>
+				</div>
+				<div class="video">
+					<video></video>
+				</div>
 			</div>
 		</div>
 	</div>

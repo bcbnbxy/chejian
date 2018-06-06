@@ -86,7 +86,8 @@
 .homeindex-head{
 	width:100%;
 	height:1.32rem;
-	background: url(../../assets/img/faxianimg/headbg.png) center no-repeat;
+	background-image:url(../../assets/img/faxianimg/headbg.png);
+	background-size: cover;
 	padding:0.1rem 0.4rem;
 	display: flex;
 	display: -webkit-flex;

@@ -7,16 +7,16 @@
 	</header>
 	<ul class="changepassword-list">
 		<li>
-			<label>手机号码</label>
+			<label>原密码</label>
 			<input type="text" placeholder="请输入原6-18位密码"/>
 		</li>
 		<li>
-			<label>微信绑定</label>
-			<input type="text" placeholder="请输入原6-18位密码"/>
+			<label>新密码</label>
+			<input type="text" placeholder="请输入新6-18位密码"/>
 		</li>
 		<li>
-			<label>修改密码</label>
-			<input type="text" placeholder="请再次输入新的6-18位密码"/>
+			<label>确认密码</label>
+			<input type="text" placeholder="请确认6-18位密码"/>
 		</li>
 	</ul>
 	<div class="submit">

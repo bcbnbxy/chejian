@@ -15,13 +15,29 @@
 			<li><span>免责声明</span><i class="iconfont icon-arrow-right-copy-copy-copy"></i></li>		
 		</ul>
 		<div class="submit">
-			<button @click="loginOut">退出登录</button>
+			<button @click="loginOut" v-show="loginout">退出登录</button>
+			<button @click="Login" v-show="login">去登陆</button>
 		</div>
 	</div>
 </template>
 
 <script>
 export default{
+	created(){
+		if(localStorage.getItem('loginInfo')){
+			this.loginout=true;
+			this.login=false;
+		}else{
+			this.loginout=false;
+			this.login=true;
+		}
+	},
+	data () {
+		return {
+			loginout:null,
+			login:null
+		}
+	},
 	methods:{
 		loginOut:function(){
 			let that=this;
@@ -32,8 +48,9 @@ export default{
 			          position: 'bottom',
   					  duration: 1500
 			       });
+			       that.login=true;
+			       that.loginout=false;
 			       localStorage.removeItem('loginInfo');
-			      that.$router.push('/');
 				}else{
 					that.$toast({
 			          message: r.errorMessage,
@@ -42,6 +59,9 @@ export default{
 			       });
 				}
 			})
+		},
+		Login:function(){
+			this.$router.push('/')
 		}
 	}
 }

@@ -26,18 +26,13 @@ export default {
   	//判断用户的登录状态
   	checklogin:function(){
   		let loginInfo={};
-//		localStorage.removeItem('loginInfo')
+//		  localStorage.removeItem('loginInfo');
   		if(localStorage.getItem('loginInfo')){
   			loginInfo=JSON.parse(localStorage.getItem('loginInfo'));
-  			if(loginInfo){
-  				this.$store.commit('getmobileno');
   				this.$router.push('/home');
   			}else{
   				this.$router.push('/');
-  			}
-  		}else{
-  			this.$router.push('/');
-  		}
+  			}  		
   	}  	
   }
 }
