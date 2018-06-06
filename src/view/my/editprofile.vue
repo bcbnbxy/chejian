@@ -143,7 +143,6 @@ export default {
     	 var base64 = dataUrl.split(',')[1];
     	 var fileType = dataUrl.split(';')[0].split(':')[1];
     	 var blob = this.toBlob(base64,fileType);
-    	 console.log(blob.name);
     	 var reader = new FileReader();
 	    reader.readAsArrayBuffer(blob);
 	    reader.onload = function (event) {	    
