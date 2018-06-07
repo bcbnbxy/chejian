@@ -13,7 +13,7 @@
 				<input class="loginpassword" type="password" placeholder="6~20位数字、字母或字符"  v-model="PassWord"/>
 			</div>
 			<router-link tag="p" to="/login/restpassword" class="forgetpassword">忘记密码？</router-link>
-			<mt-button type="default" :disabled="isdisabled" @click="login">登陆</mt-button>
+			<mt-button type="default" :disabled="isdisabled" @click="login">登录</mt-button>
 		</div>
 	</div>
 </template>

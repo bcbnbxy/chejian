@@ -7,7 +7,7 @@
 				<div class="bootpage-btngroup">
 					<router-link tag="mt-button" to="/register">注册</router-link>
 					<p>或</p>
-					<router-link tag="mt-button"  to="/login">登陆</router-link>
+					<router-link tag="mt-button"  to="/login">登录</router-link>
 				</div>				
 			</div>
 		</div>

@@ -1,18 +1,36 @@
 <template>
 <div class="editprofile-wrap">
-	<header>
+	<!--<header>
 		<span @click="$router.go(-1)"><i class="iconfont icon-fanhui"></i></span>
 		<span>编辑个人资料</span>
-		<span style="font-size:0.44rem;">保存</span>
-	</header>
-	<dl class="editprofile-list">
-		<dt><p>修改头像</p><p><img :src="headerImage"/><input type="file" id="change" accept="image" @change="change"><i class="iconfont icon-arrow-right-copy-copy-copy"></i></p></dt>
-		<dd><p>修改昵称</p><p><input type="tetx" value="婉婉"><i class="iconfont icon-arrow-right-copy-copy-copy"></i></p></dd>
-		<dd><p>性别</p><p><input type="tetx" value="女"><i class="iconfont icon-arrow-right-copy-copy-copy"></i></p></dd>
-		<dd><p>生日</p><p><input type="text" value="1994.05.02"/><i class="iconfont icon-arrow-right-copy-copy-copy"></i></p></dd>
-		<dd><p>所在地</p><p><input type="text" value="广东/深圳"/><i class="iconfont icon-arrow-right-copy-copy-copy"></i></p></dd>
-		<dd><label>签名</label><textarea  placeholder="个性签名..."></textarea></dd>
-	</dl>
+		<span style="font-size:0.44rem;" @click="save()" v-if="unbind">保存</span>
+		<span style="font-size:0.44rem;" v-else>保存</span>
+	</header>-->
+	<mt-header  title="我的">
+		<mt-button icon="back" slot="left"></mt-button>
+		<span style="font-size:0.44rem;" @click="save()" v-if="unbind" slot="right">保存</span>
+		<span style="font-size:0.44rem;" v-else slot="right">保存</span>
+	</mt-header>
+	<div class="editprofile-list">
+		<div class="editheadphoto"><p>修改头像</p><p><img :src="headerImage"/><input type="file" id="change" accept="image" @change="change"></p></div>
+		<mt-field label="修改昵称" v-model="nickname"></mt-field>
+		<div class="editsex">
+			<span>性别</span>
+			<p>
+				<input id="item1" type="radio" name="item" value="m" checked>
+        		<label for="item1"></label>
+        		<span>男</span>
+			</p>
+			<p>
+				<input id="item2" type="radio" name="item" value="f" checked>
+        		<label for="item2"></label>
+        		<span>女</span>
+			</p>
+		</div>
+		<div class="editbirthday" @click="openPicker"><span>生日</span><input type="text" v-model="birthday" readonly/></div>
+		<div class="editbirthday" @click="showpopupVisible"><span>所在地</span><input type="text" v-model="city" readonly/></div>
+		<mt-field label="签名" placholder="sign" type="textarea" rows="4" v-model="sign"></mt-field>
+	</div>
 	<div class="container" v-show="panel">  
         <div>  
             <img id="image" :src="url" alt="Picture">  
@@ -21,16 +39,25 @@
         	<button type="button" id="button" @click="commit">确定</button>  
         	<button type="button"id="cancel" @click="cancel">取消</button> 
         </div>
-    </div> 
+    </div>
+    <mt-datetime-picker ref="picker" type="date"  year-format="{value} 年"  month-format="{value} 月" date-format="{value} 日" :startDate="new Date('1900')" :endDate="new Date()"  @confirm="handleConfirm"></mt-datetime-picker>  	    	    	    	
+	<mt-popup v-model="popupVisible" position="bottom" class="picker-city">
+		 <mt-picker :slots="citySlots" @change="onCityChange" :visible-item-count="5" ></mt-picker> 
+	</mt-popup>	 
 </div>
 </template>
 
 <script>
 import Cropper from "cropperjs";
+import store from '../../store'
+import {buildSign} from '../../assets/script/until.js'
 export default {
+	created(){
+		this.getCityInfo();
+	},
   data() {
     return {
-      headerImage: require ("../../assets/img/faxianimg/avatar.png"),
+      headerImage:JSON.parse(localStorage.getItem('loginInfo')).headphoto?JSON.parse(localStorage.getItem('loginInfo')).headphoto:require ("../../assets/img/faxianimg/avatar.png"),
       picValue: "",
       cropper: "",
       croppable: false,
@@ -38,8 +65,32 @@ export default {
       url: "",
       imgCropperData: {
         accept: "image/gif, image/jpeg, image/png, image/jpg"
-      }
-    };
+      },
+      unbind:true,
+      nickname:JSON.parse(localStorage.getItem('loginInfo')).nickname,
+      sex:JSON.parse(localStorage.getItem('loginInfo')).sex? JSON.parse(localStorage.getItem('loginInfo')).sex:'未知',
+      birthday:JSON.parse(localStorage.getItem('loginInfo')).birthday?JSON.parse(localStorage.getItem('loginInfo')).birthday:'未知',
+      city:JSON.parse(localStorage.getItem('loginInfo')).city?JSON.parse(localStorage.getItem('loginInfo')).city:'未知',
+      sign:JSON.parse(localStorage.getItem('loginInfo')).sign?JSON.parse(localStorage.getItem('loginInfo')).sign:'随便说点什么',
+      popupVisible:false,
+			citySlots: [
+	        {
+	          flex: 1,
+	          values: provinceList,
+	          className: 'slot1',
+	          textAlign: 'center'
+	        }, {
+	          divider: true,
+	          content: '-',
+	          className: 'slot2'
+	        }, {
+	          flex: 1,
+	          values:  cityList,
+	          className: 'slot3',
+	          textAlign: 'center'
+	        }
+	    ],
+    }
   },
   mounted() {
     //初始化这个裁剪框
@@ -55,7 +106,7 @@ export default {
       }
     });
   },
-  methods: {
+  methods:{
     //取消上传
     cancel() {
         this.panel = false;
@@ -107,13 +158,10 @@ export default {
       if (!this.croppable) {
         return;
       }
-      // Crop
       croppedCanvas = this.cropper.getCroppedCanvas();
-      // Round
       roundedCanvas = this.getRoundedCanvas(croppedCanvas);
-      this.headerImage = roundedCanvas.toDataURL();
       //上传图片
-      this.postImg(this.headerImage);
+      this.postImg(roundedCanvas.toDataURL());
     },
     //canvas画图
     getRoundedCanvas(sourceCanvas) {
@@ -140,40 +188,25 @@ export default {
     },
     //提交上传函数
     postImg(dataUrl) {
-    	 var base64 = dataUrl.split(',')[1];
-    	 var fileType = dataUrl.split(';')[0].split(':')[1];
-    	 var blob = this.toBlob(base64,fileType);
-    	 var reader = new FileReader();
-	    reader.readAsArrayBuffer(blob);
-	    reader.onload = function (event) {	    
-	        // 配置
-	        var client = new OSS.Wrapper({
-	            region: 'headphoto',
-	            accessKeyId: 'LTAI1Ej1pfnpLaDH',
-	            accessKeySecret: 'WQbS0g4AdDKVCr5T4m4nvUSdo35AVT',
-	            bucket: 'chd-app.oss-cn-shenzhen'
-	        });
-        var date = new Date();
-        var time = ''+date.getFullYear()+(date.getMonth()+1)+date.getDate();
-        var storeAs = 'Uploads/file/'+time+'/'+date.getTime()+'.'+blob.type.split('/')[1];        
-        // arrayBuffer转Buffer
-        var buffer = new OSS.Buffer(event.target.result);
-        client.put(storeAs, buffer).then(function(result){
-            console.log(result)
-        })
-//  	var storeAs = 'upload-file';
-//   	const client = new OSS.Wrapper({
-//	        region:'chd-app.oss-cn-shenzhen.aliyuncs.com',
-//	        accessKeyId: 'LTAI1Ej1pfnpLaDH',
-//	        accessKeySecret: 'WQbS0g4AdDKVCr5T4m4nvUSdo35AVT',
-//	        bucket: 'headphoto'
-//	    })
-//   	client.multipartUpload(storeAs, blob).then(function (result) {
-//          console.log(result);
-//        }).catch(function (err) {
-//          console.log(err);
-//        });
-		}
+    	this.unbind=false;
+    	var base64 = dataUrl.split(',')[1];
+    	var blob = this.toBlob(base64,'image/jpeg');
+		var formData = new FormData()
+		let publicOPtion=store.state.common.publicOption
+		publicOPtion.path='headphoto';
+		publicOPtion.__sign__=buildSign(publicOPtion,publicOPtion.__uuid__);
+		formData.append(this.picValue.name,blob)
+        formData.append('__uuid__',publicOPtion.__uuid__);      
+        formData.append('path',publicOPtion.path);
+        formData.append('__mobileno__',publicOPtion.__mobileno__);
+        formData.append('__sign__',publicOPtion.__sign__);
+        formData.append('__timestamp__',publicOPtion.__timestamp__);
+        formData.append('__platform__',publicOPtion.__platform__);
+        var that=this;
+    	this.$api('uploadImage.do',formData).then(function(r){
+    	 	that.unbind=true;
+//  	 	that.headerImage="https://chd-app.oss-cn-shenzhen.aliyuncs.com/"+r.data;
+    	})
     },
     toBlob(urlData,fileType){
         var bytes=window.atob(urlData),
@@ -183,9 +216,71 @@ export default {
             u8arr[n]=bytes.charCodeAt(n);
         }
         return new Blob([u8arr],{type:fileType});
-    }
+    },
+    save(){
+//  	console.log(this.sex)
+    },
+//生日选择
+    openPicker() {
+        this.$refs.picker.open();
+     },
+     handleConfirm(data){
+		this.birthday=this.formatDate(data);
+     },
+    formatDate(date) {
+	    const y = date.getFullYear()
+	    let m = date.getMonth() + 1
+	    m = m < 10 ? '0' + m : m
+	    let d = date.getDate()
+	    d = d < 10 ? ('0' + d) : d
+	    return y + ' ' + m + ' ' + d
+	  },
+//城市选择
+	showpopupVisible(){
+		this.popupVisible=true;
+	},
+	onCityChange(picker, values) {
+		this.citySlots[2].values=[];
+		cityList=[];
+		for (let i=0;i<areaInfo.length;i++){
+			if(values[0]==areaInfo[i].pname){
+				for (let j=0;j<areaInfo[i].cities.length;j++){
+					cityList.push(areaInfo[i].cities[j].cname);
+				}
+			}
+		}
+		this.citySlots[2].values=cityList;
+//		console.log(this.citySlots[2].values);
+		console.log(picker.getSlotValue(1));
+   },
+   getCityInfo(){
+   	var that=this;
+   	this.$api('/Execute.do',{action:"provinces"}).then(function(r){
+   		if(r.errorCode=='0'){
+   			areaInfo=r.data.provinces;
+   			console.log(JSON.stringify(r))
+// 			for(let i=0;i<areaInfo.length;i++){
+// 				provinceList.push(areaInfo[i].pname);
+// 			};
+   			//that.citySlots[0].values=provinceList;
+ 			for(let j=0;j<areaInfo.length;j++){
+				provinceList.push(areaInfo[j].pname);
+   				if(provinceList[0]==areaInfo[j].pname){
+   					for (let k=0;k<areaInfo[j].cities.length;k++){
+   						cityList.push(areaInfo[j].cities[k].cname);
+   					}
+   				}
+   			};
+   			that.citySlots[2].values=cityList;
+   			that.citySlots[0].values=provinceList;
+   		}
+   	})
+   }
   }
 };
+var provinceList=[];
+var cityList=[];
+var areaInfo={};
 </script>
 
 <style>
@@ -200,34 +295,101 @@ export default {
 .editprofile-wrap>header{
 	height:1.32rem;
 	padding:0 0.5rem;
-	display: flex;
-	display: -webkit-flex;
-	justify-content: space-between;
-	align-items: center;
-	font-size:0.56rem;
 	color:#fff;
 	background-image:url(../../assets/img/faxianimg/headbg.png) ;
 	background-size:cover ;
 }
+.editprofile-wrap .mint-button--default{
+	background: none !important;
+	width:auto;
+	height:auto;
+}
+.editprofile-wrap .mint-header-title{
+	font-size:0.52rem;
+}
+.editprofile-wrap .mint-cell{
+	min-height:1.6rem;
+}
+.editprofile-wrap .mint-cell-wrapper{
+	font-size:0.44rem !important;
+	color:#888;
+	padding:0 0.5rem;
+	background-image:none ;
+	border-bottom:1px solid #dcdcdc;
+}
+
 .editprofile-list{
 	background: #fff;
 }
-.editprofile-list dt{
+.editprofile-list .editsex{
+	height:1.6rem;
+	display:flex;
+	display: -webkit-flex;
+	align-items: center;
+	font-size:0.44rem;
+	color:#888;
+	border-bottom:1px solid #ddd;
+	padding:0 0.5rem;
+}
+.editprofile-list .editsex span{	
+	flex:1;
+}
+.editprofile-list .editsex p{
+	position: relative;
+    line-height: 30px;
+    margin-left:1rem;
+}
+.editprofile-list .mint-field-core{
+	text-align: right;
+}
+.editprofile-list .editsex p span{
+	margin-left:0.3rem;
+}
+.editprofile-list .editsex p input[type="radio"]{
+	width: 20px;
+    height: 20px;
+    opacity: 0;
+}
+.editprofile-list .editsex p label {
+    position: absolute;
+    left: 0;
+    top: 5px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1px solid #999;
+}
+.editprofile-list .editsex p input:checked+label { 
+    background-color: #369cf9;
+    border: 1px solid #369cf9;
+}
+.editprofile-list .editsex p input:checked+label::after {
+    position: absolute;
+    content: "";
+    width: 5px;
+    height: 10px;
+    top: 1px;
+    left: 5px;
+    border: 1px solid #fff;
+    border-top: none;
+    border-left: none;
+    transform: rotate(45deg)
+}
+.editprofile-list .editheadphoto{
 	height:2.4rem;
 	display:flex;
 	display: -webkit-flex;
 	justify-content: space-between;
 	align-items: center;
 	font-size:0.44rem;
-	color:#222;
+	color:#888;
 	border-bottom:1px solid #ddd;
-	padding:0 0.5rem;
-	
+	padding:0 0.5rem;	
 }
-.editprofile-list dt p:last-child{
+.editprofile-list .editheadphoto p:last-child{
 	position: relative;
 }
-.editprofile-list dt p:last-child input{
+.editprofile-list .editheadphoto p:last-child input{
 	position: absolute;
 	left:0;
 	right:0;
@@ -237,44 +399,27 @@ export default {
 	opacity: 0;
 	filter:Aplpha(opacity=0);
 }
-.editprofile-list dd p:last-child input,.editprofile-list dd p:last-child textarea{
-	flex:1;
-	text-align: right;
-}
-.editprofile-list dt img{
+.editprofile-list .editheadphoto img{
 	width:1.4rem;
 	vertical-align: middle;
 }
-.editprofile-list i{
-	color:#999;
-	margin-left:0.5rem;
-	font-size:0.6rem;
-}
-.editprofile-list dd{
+.editbirthday{
 	height:1.6rem;
-	display:flex;
+	padding:0 0.5rem;
+	color:#888;
+	display: flex;
 	display: -webkit-flex;
+	justify-content: space-between;
 	align-items: center;
 	font-size:0.44rem;
-	color:#222;
-	border-bottom:1px solid #ddd;
-	padding:0 0.5rem;
+	border-bottom:1px solid #dcdcdc;
 }
-.editprofile-list dd p:last-child{
-	flex:1;
+.editbirthday input {
+	flex: 1;
 	text-align: right;
 }
-.editprofile-list dd:last-child{
-	border-bottom:none;
-	height:3.16rem;
-	align-items: flex-start;
-	padding:0.6rem 0.5rem ;
-}
-.editprofile-list dd:last-child textarea{
-	flex: 1;
-	padding:0;
-	padding-left:0.5rem;
-	height:100%;
+.picker-city{
+	width:100%;
 }
 .btn-group{
 	width:100%;

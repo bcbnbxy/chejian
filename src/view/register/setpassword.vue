@@ -3,7 +3,6 @@
 	<div class="setpassword-title">请设置密码</div>
 	<div class="setpassword-set">
 		<label>设置密码</label>
-		<!--<mt-field  placeholder="6~20位数字、字母或字符" type="password" v-model="password"></mt-field>-->
 		<input placeholder="6~20位数字、字母或字符" type="password" v-model="password"/>
 	</div>
 	<div class="setpassword-sure">

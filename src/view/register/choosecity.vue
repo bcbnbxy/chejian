@@ -27,7 +27,7 @@
 		        </div>
 		    </section>
 		</div>
-		<mt-button type="default" style="margin-top:36px;" :disabled="isdisabled" @click="gologin">去登陆</mt-button>
+		<mt-button type="default" style="margin-top:36px;" :disabled="isdisabled" @click="gologin">去登录</mt-button>
 	</div>
 </template>
 

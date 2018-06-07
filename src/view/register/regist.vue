@@ -12,12 +12,12 @@
 			<div class="thirdparty">
 				<div class="thirdparty-title">
 					<i></i>
-					<span>或使用其他方式登陆</span>
+					<span>或使用其他方式登录</span>
 					<i></i>
 				</div>
 				<div class="thirdparty-icon">
-					<p><svg class="icon" aria-hidden="true"><use xlink:href="#icon-weixin"></use></svg><span>微信登陆</span></p>   
-					<p><svg class="icon" aria-hidden="true"><use xlink:href="#icon-QQ"></use></svg><span>QQ登陆</span></p>
+					<p><svg class="icon" aria-hidden="true"><use xlink:href="#icon-weixin"></use></svg><span>微信登录</span></p>   
+					<p><svg class="icon" aria-hidden="true"><use xlink:href="#icon-QQ"></use></svg><span>QQ登录</span></p>
 				</div>
 			</div>
 		</div>
