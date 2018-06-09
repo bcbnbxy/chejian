@@ -20,7 +20,8 @@
 export default {
   name: 'App',
   created(){
-	 	this.checklogin();		
+	 	this.checklogin();
+	 	this.getCityInfo();
   },
   methods:{
   	//判断用户的登录状态
@@ -33,7 +34,14 @@ export default {
   			}else{
   				this.$router.push('/');
   			}  		
-  	}  	
+  	},
+  	getCityInfo:function(){
+   	this.$api('/Execute.do',{action:"provinces"}).then(function(r){
+	   		if(r.errorCode=='0'){
+	   			 localStorage.setItem('CITY_DATA',JSON.stringify(r.data.provinces))
+	   		}
+	   	})
+	  }
   }
 }
 </script>

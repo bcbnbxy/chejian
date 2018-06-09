@@ -3,7 +3,7 @@
 		<div><span @click="goback" style="display: flex;display: -webkit-flex;align-items: center;" v-show="$route.path!=='/'"><i class="iconfont icon-fanhui" style="font-size:24px;margin-right:4px;vertical-align: middle;"></i>返回</span></div>
 		<div><span v-show="$route.path==='/'">车间</span></div>
 		<div>
-			<router-link tag="span" to="/login" class="register" v-if="$route.path.split('/').length===2&&$route.path.indexOf('register')!==-1">登陆</router-link>
+			<router-link tag="span" to="/login" class="register" v-if="$route.path.split('/').length===2&&$route.path.indexOf('register')!==-1">登录</router-link>
 			<router-link tag="span" to="/register" class="register" v-if="$route.path.split('/').length===2&&$route.path.indexOf('login')!==-1">注册</router-link>
 		</div>
 	</div>

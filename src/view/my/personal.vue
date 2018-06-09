@@ -9,7 +9,7 @@
 			<div class="personal-top-main">
 				<div><img src="headphoto" :onerror="defaultImg"/></div>
 				<div>
-					<p><span>{{nickname ? nickname: loginname}}</span><i class="iconfont icon-zuihoudinggao-"></i></p>
+					<p><span>{{nickname ? nickname: loginname}}</span><i class="iconfont"  :class="Sex"></i></p>
 					<router-link tag="p" to="/editprofile"><span>{{mobileno}}</span><i class="iconfont icon-xiugaimima"></i></router-link>
 				</div>
 			</div>
@@ -43,6 +43,15 @@
 
 <script>
 export default{
+	computed:{
+		Sex:function(){
+			if(this.sex==='m'){
+				return 'icon-nanxing'
+			}else if(this.sex==='f'){
+				return 'icon-zuihoudinggao-'
+			}
+		}
+	},
 	created(){
 		this.getUserInfo();
 	},
@@ -52,7 +61,8 @@ export default{
 			mobileno:'',
 			headphoto:'../../assets/img/faxianimg/avatar.png',
 			loginname:'',
-			defaultImg:'this.src="' + require('../../assets/img/faxianimg/avatar.png') + '"' 
+			defaultImg:'this.src="' + require('../../assets/img/faxianimg/avatar.png') + '"' ,
+			sex:'',
 		}
 	},
 	methods:{
@@ -60,10 +70,13 @@ export default{
 			let userInfo=JSON.parse(localStorage.getItem('loginInfo'));
 			let that=this;
 			this.$api('/Execute.do',{action:'userInfo',userseq:userInfo.userseq}).then(function(r){
+				console.log(JSON.stringify(r));
 				if(r.errorCode == '0'){
 					that.nickname=r.data.userInfo.nickname;
 					that.mobileno=r.data.userInfo.mobileno;
 					that.loginname=r.data.userInfo.loginname;
+					that.sex=r.data.userInfo.gender;
+					localStorage.setItem("loginInfo",JSON.stringify(r.data.userInfo));
 				}else{
 					that.$toast({
 			          message: r.errorMessage,

@@ -6,23 +6,60 @@
 			<span></span>
 		</header>
 		<div class="feedback-textarea">
-			<textarea placeholder="请输入您的意见或者建议，我们将为您提供更好的服务"></textarea>
+			<textarea placeholder="请输入您的意见或者建议，我们将为您提供更好的服务" v-model="content"></textarea>
 		</div>
-		<div class="feedback-email">
+		<!--<div class="feedback-email">
 			<label>您的邮箱:</label>
 			<input type="email"/>
 		</div>
 		<div class="feedback-email">
 			<label>您的电话号码:</label>
 			<input type="text"/>
-		</div>
+		</div>-->
 		<div class="submit">
-			<button>提交意见</button>
+			<mt-button type="default"  @click="submit">确定</mt-button>
 		</div>
 	</div>
 </template>
 
 <script>
+export default{
+	data(){
+		return {
+			content:''
+		}
+	},
+	methods:{
+		submit:function(){
+			if(this.content.trim().length<1){
+				this.$toast({
+		          message: '内容不能为空',
+		          position: 'bottom',
+				  duration: 1500
+		      });
+			}else{
+				var that=this;
+				this.$api('/Execute.do',{action:"sendFeedback",userseq:JSON.parse(localStorage.getItem('loginInfo')).userseq,content:this.content}).then(function(r){
+					console.log(JSON.stringify(r));
+					if(r.errorCode=='0'){
+						that.$toast({
+				          message: '你的反馈我们已经查收！',
+				          position: 'bottom',
+						  duration: 1500
+				      });
+					}else{
+						that.$toast({
+				          message: r.errorMessage,
+				          position: 'bottom',
+						  duration: 1500
+				      });
+					}
+				})
+				
+			}
+		}
+	}
+}
 </script>
 
 <style scoped>
@@ -78,15 +115,5 @@
 	padding:0 0.6rem;
 	padding-top:0.2rem;
 }
-.submit>button{
-	width:100%;
-	text-align: center;
-	background:#369cf9;
-	line-height:1.6rem;
-	height:1.6rem;
-	border:none;
-	font-size:0.48rem;
-	color:#fff;
-	border-radius: 5px;
-}
+
 </style>

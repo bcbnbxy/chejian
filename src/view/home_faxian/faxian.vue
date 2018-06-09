@@ -21,7 +21,7 @@ export default{
 	components:{Dynamicslist,Attention},
 	data(){
 		return {
-			currentView: 'Dynamicslist',
+			currentView: 'dynamicslist',
 			active: 0,
 			index:0,
 			tabs: [

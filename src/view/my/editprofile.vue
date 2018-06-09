@@ -1,13 +1,7 @@
 <template>
 <div class="editprofile-wrap">
-	<!--<header>
-		<span @click="$router.go(-1)"><i class="iconfont icon-fanhui"></i></span>
-		<span>编辑个人资料</span>
-		<span style="font-size:0.44rem;" @click="save()" v-if="unbind">保存</span>
-		<span style="font-size:0.44rem;" v-else>保存</span>
-	</header>-->
 	<mt-header  title="我的">
-		<mt-button icon="back" slot="left"></mt-button>
+		<mt-button icon="back" slot="left" @click="$router.go(-1)"></mt-button>
 		<span style="font-size:0.44rem;" @click="save()" v-if="unbind" slot="right">保存</span>
 		<span style="font-size:0.44rem;" v-else slot="right">保存</span>
 	</mt-header>
@@ -17,19 +11,19 @@
 		<div class="editsex">
 			<span>性别</span>
 			<p>
-				<input id="item1" type="radio" name="item" value="m" checked>
+				<input id="item1" type="radio" name="item" value="m"  v-model="param">
         		<label for="item1"></label>
         		<span>男</span>
 			</p>
 			<p>
-				<input id="item2" type="radio" name="item" value="f" checked>
+				<input id="item2" type="radio" name="item" value="f"  v-model="param">
         		<label for="item2"></label>
         		<span>女</span>
 			</p>
 		</div>
 		<div class="editbirthday" @click="openPicker"><span>生日</span><input type="text" v-model="birthday" readonly/></div>
-		<div class="editbirthday" @click="showpopupVisible"><span>所在地</span><input type="text" v-model="city" readonly/></div>
-		<mt-field label="签名" placholder="sign" type="textarea" rows="4" v-model="sign"></mt-field>
+		<div class="editbirthday" @click="showpopupVisible"><span>所在地</span><p>{{address}}{{city1}}</p></div>
+		<mt-field label="签名"  type="textarea" rows="4" v-model="sign"></mt-field>
 	</div>
 	<div class="container" v-show="panel">  
         <div>  
@@ -42,7 +36,12 @@
     </div>
     <mt-datetime-picker ref="picker" type="date"  year-format="{value} 年"  month-format="{value} 月" date-format="{value} 日" :startDate="new Date('1900')" :endDate="new Date()"  @confirm="handleConfirm"></mt-datetime-picker>  	    	    	    	
 	<mt-popup v-model="popupVisible" position="bottom" class="picker-city">
-		 <mt-picker :slots="citySlots" @change="onCityChange" :visible-item-count="5" ></mt-picker> 
+		 <div class="citypicker1">
+		 	<mt-picker :slots="provinces"  @change="onProvinceChange"  value-key="pname" :visible-item-count="5"></mt-picker>
+		 </div>
+		 <div class="citypicker2">
+		 	<mt-picker :slots="citys"  @change="onCityChange"  value-key="cname" :visible-item-count="5"></mt-picker>
+		 </div>
 	</mt-popup>	 
 </div>
 </template>
@@ -52,46 +51,66 @@ import Cropper from "cropperjs";
 import store from '../../store'
 import {buildSign} from '../../assets/script/until.js'
 export default {
-	created(){
-		this.getCityInfo();
-	},
+  created(){
+  	if(JSON.parse(localStorage.getItem('loginInfo')).gender=='m'){
+  		this.param='m'
+  	}else if(JSON.parse(localStorage.getItem('loginInfo')).gender=='f'){
+  		this.param='f'
+  	}else{
+  		this.param=''
+  	}
+  },
   data() {
     return {
       headerImage:JSON.parse(localStorage.getItem('loginInfo')).headphoto?JSON.parse(localStorage.getItem('loginInfo')).headphoto:require ("../../assets/img/faxianimg/avatar.png"),
       picValue: "",
       cropper: "",
+      checkedValue:'',
       croppable: false,
+      avatar:null,
       panel: false,
+      param:'',
       url: "",
       imgCropperData: {
         accept: "image/gif, image/jpeg, image/png, image/jpg"
       },
+      popupVisible:false,
       unbind:true,
       nickname:JSON.parse(localStorage.getItem('loginInfo')).nickname,
-      sex:JSON.parse(localStorage.getItem('loginInfo')).sex? JSON.parse(localStorage.getItem('loginInfo')).sex:'未知',
-      birthday:JSON.parse(localStorage.getItem('loginInfo')).birthday?JSON.parse(localStorage.getItem('loginInfo')).birthday:'未知',
-      city:JSON.parse(localStorage.getItem('loginInfo')).city?JSON.parse(localStorage.getItem('loginInfo')).city:'未知',
-      sign:JSON.parse(localStorage.getItem('loginInfo')).sign?JSON.parse(localStorage.getItem('loginInfo')).sign:'随便说点什么',
-      popupVisible:false,
-			citySlots: [
-	        {
-	          flex: 1,
-	          values: provinceList,
-	          className: 'slot1',
-	          textAlign: 'center'
-	        }, {
-	          divider: true,
-	          content: '-',
-	          className: 'slot2'
-	        }, {
-	          flex: 1,
-	          values:  cityList,
-	          className: 'slot3',
-	          textAlign: 'center'
-	        }
-	    ],
-    }
-  },
+      birthday:JSON.parse(localStorage.getItem('loginInfo')).birthday?new Date(parseInt(JSON.parse(localStorage.getItem('loginInfo')).birthday)).getFullYear()+'/'+(new Date(parseInt(JSON.parse(localStorage.getItem('loginInfo')).birthday)).getMonth()+1)+'/'+new Date(parseInt(JSON.parse(localStorage.getItem('loginInfo')).birthday)).getDate() : '未知',
+      city1:JSON.parse(localStorage.getItem('loginInfo')).city ? JSON.parse(localStorage.getItem('loginInfo')).city:'',
+      sign:JSON.parse(localStorage.getItem('loginInfo')).descript ? JSON.parse(localStorage.getItem('loginInfo')).descript:'随便说点什么',
+      address:JSON.parse(localStorage.getItem('loginInfo')).province ? JSON.parse(localStorage.getItem('loginInfo')).province:'',
+      province:
+      {
+	      pname:'北京市',
+	      pid:'1'
+      },
+      maskFlag:false,
+      city:{
+        cname:'北京市',
+        cid:'1'
+      },
+      flag:0, //最开始省市区那三个picker会初始化调用change事件，但是此时没有省市区数据，因此会报错，
+              //所以以这个标识符来控制当时第一次初始化时调用change事件时直接return
+      provinces: [
+        {
+          flex: 1,
+          values: this._getProvince(),
+          className: 'slot1',
+          textAlign: 'center'
+        }
+      ],
+      citys: [
+        {
+          flex: 1,
+          values: this._getCity('北京市'),
+          className: 'slot1',
+          textAlign: 'center'
+        }
+      ]
+  }
+},
   mounted() {
     //初始化这个裁剪框
     var self = this;
@@ -162,6 +181,7 @@ export default {
       roundedCanvas = this.getRoundedCanvas(croppedCanvas);
       //上传图片
       this.postImg(roundedCanvas.toDataURL());
+      this.headerImage=roundedCanvas.toDataURL();
     },
     //canvas画图
     getRoundedCanvas(sourceCanvas) {
@@ -205,7 +225,7 @@ export default {
         var that=this;
     	this.$api('uploadImage.do',formData).then(function(r){
     	 	that.unbind=true;
-//  	 	that.headerImage="https://chd-app.oss-cn-shenzhen.aliyuncs.com/"+r.data;
+    	 	that.avatar=r.data.headphoto;
     	})
     },
     toBlob(urlData,fileType){
@@ -218,7 +238,33 @@ export default {
         return new Blob([u8arr],{type:fileType});
     },
     save(){
-//  	console.log(this.sex)
+		var that=this;
+		this.$api('/Execute.do',{
+			action:"updateUserInfo",
+			nickname:this.nickname,
+			headphoto:"../../assets/img/faxianimg/avatar.png",
+			descript:this.sign,
+			gender:this.checkedValue,
+			birthday:new Date(this.birthday).getTime(),
+			province:this.city1,
+			city:this.address
+		}).then(function(r){
+			console.log(JSON.stringify(r));
+			if(r.errorCode==='0'){
+				that.$toast({
+			          message: '修改资料成功',
+			          position: 'bottom',
+  					  duration: 1500
+			       });
+				localStorage.setItem("loginInfo",JSON.stringify(r.data.updateUserInfo));
+			}else{
+				that.$toast({
+			          message: r.errorMessage,
+			          position: 'bottom',
+  					  duration: 1500
+			       });
+			}
+		})
     },
 //生日选择
     openPicker() {
@@ -238,49 +284,59 @@ export default {
 //城市选择
 	showpopupVisible(){
 		this.popupVisible=true;
-	},
-	onCityChange(picker, values) {
-		this.citySlots[2].values=[];
-		cityList=[];
-		for (let i=0;i<areaInfo.length;i++){
-			if(values[0]==areaInfo[i].pname){
-				for (let j=0;j<areaInfo[i].cities.length;j++){
-					cityList.push(areaInfo[i].cities[j].cname);
-				}
-			}
-		}
-		this.citySlots[2].values=cityList;
-//		console.log(this.citySlots[2].values);
-		console.log(picker.getSlotValue(1));
-   },
-   getCityInfo(){
-   	var that=this;
-   	this.$api('/Execute.do',{action:"provinces"}).then(function(r){
-   		if(r.errorCode=='0'){
-   			areaInfo=r.data.provinces;
-   			console.log(JSON.stringify(r))
-// 			for(let i=0;i<areaInfo.length;i++){
-// 				provinceList.push(areaInfo[i].pname);
-// 			};
-   			//that.citySlots[0].values=provinceList;
- 			for(let j=0;j<areaInfo.length;j++){
-				provinceList.push(areaInfo[j].pname);
-   				if(provinceList[0]==areaInfo[j].pname){
-   					for (let k=0;k<areaInfo[j].cities.length;k++){
-   						cityList.push(areaInfo[j].cities[k].cname);
-   					}
-   				}
-   			};
-   			that.citySlots[2].values=cityList;
-   			that.citySlots[0].values=provinceList;
-   		}
-   	})
-   }
+    },
+   onProvinceChange(picker, values) {
+      if(this.flag===0){
+        return
+      }
+      let provinceIndex=picker.getSlotValue(0)
+      this.province=provinceIndex
+      let city=this._getCity(provinceIndex.pname)
+      this.citys[0].values=city
+      this.city=city[0]
+      this.city1=provinceIndex.pname+'/';
+    },
+    onCityChange(picker, values) {
+      if(this.flag===0){
+      	this.flag=1
+        return
+      }
+      let cityIndex=picker.getSlotValue(0)
+      this.city=cityIndex
+     this.address=this.city.cname;
+    },
+    //得到省份数据
+    _getProvince(){
+    	var CITY_DATA=JSON.parse(localStorage.getItem('CITY_DATA'));
+      	let province=[]
+        CITY_DATA.forEach(function(item,index){
+          let obj={}
+        obj.pid=item.pid
+        obj.pname=item.pname
+        province.push(obj)
+      })
+      return province
+      
+    },
+    //根据省份得到城市数据
+    _getCity(province){
+      var CITY_DATA=JSON.parse(localStorage.getItem('CITY_DATA'));
+      let city=[]
+      CITY_DATA.forEach((item,index)=>{
+        if(item.pname === province){
+          item.cities.forEach((item,index)=>{
+            let obj={}
+            obj.cid=item.cid
+            obj.cname=item.cname
+            city.push(obj)
+            return 
+          })
+        }
+      })
+      return city
+    },
   }
 };
-var provinceList=[];
-var cityList=[];
-var areaInfo={};
 </script>
 
 <style>
@@ -291,6 +347,7 @@ var areaInfo={};
 	display: flex;
 	display: -webkit-flex;
 	flex-direction: column;	
+	overflow: hidden;
 }
 .editprofile-wrap>header{
 	height:1.32rem;
@@ -414,12 +471,20 @@ var areaInfo={};
 	font-size:0.44rem;
 	border-bottom:1px solid #dcdcdc;
 }
-.editbirthday input {
+.editbirthday input,.editbirthday p {
 	flex: 1;
 	text-align: right;
 }
 .picker-city{
 	width:100%;
+}
+.citypicker1{
+	float:left;
+	width:60%;
+}
+.citypicker2{
+	float:left;
+	width:30%;
 }
 .btn-group{
 	width:100%;

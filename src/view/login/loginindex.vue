@@ -105,6 +105,7 @@ export default {
 			var that=this;
 			this.$api('/Execute.do',{loginname:this.loginname,password:this.password,action:'login'}).then(function(r){
 				if(r.errorCode==0){
+					console.log(JSON.stringify(r));
 					that.$toast({
 			          message: '登录成功',
 			          position: 'bottom',

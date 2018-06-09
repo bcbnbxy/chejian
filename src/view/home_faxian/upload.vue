@@ -1,23 +1,78 @@
 <template>
 	<div class="upload-wrap">
 		<div class="upload-head">
-			<span>取消</span>
-			<span>发布</span>
+			<span @click="$router.go(-1)">取消</span>
+			<span @click="publish">发布</span>
 		</div>
 		<div class="upload-container">
 			<div class="upload-container-top">
-				<textarea placeholder="文字不能超过500个"></textarea>
+				<textarea placeholder="文字不能超过120个" v-model="content" maxlength="120" @input="descInput"></textarea>
 			</div>
 			<div class="upload-container-bottom">
 				<div class="upload-button">
-					<p></p>
-					<input type="file" accept="image/gif, image/jpeg" multiple="multiple"/>
+					<p  @click="actionSheet"></p>
+					<mt-actionsheet :actions="actions"  v-model="sheetVisible" cancelText="取消"></mt-actionsheet>
 				</div>
 			</div>
+			<div class="upload-container-remnant"><span>{{remnant}}/120</span></div>
 		</div>
 	</div>
 </template>
 <script>
+export default{
+	data(){
+		return {
+			content:'',
+			apiflag:1,
+			remnant: 120,
+			actions: [{  
+		        name: '拍照',  
+		        method : this.getCamera// 调用methods中的函数  
+		      }, {  
+		        name: '从相册中选择',   
+		        method : this.getLibrary// 调用methods中的函数  
+		      }],  
+		      // action sheet 默认不显示，为false。操作sheetVisible可以控制显示与隐藏  
+		      sheetVisible: false  
+		}  
+	},
+	methods:{
+		publish:function(){
+			var param={action:'blog.addBlog'}
+			if(this.apiflag==0){
+				if(this.content.trim().length<1){
+					this.$toast({
+			          message: '内容不能为空',
+			          position: 'bottom',
+	  				  duration: 1500
+			        });
+					return
+				}else{
+					param.content=this.content;
+					param.mediatype="0"
+				}
+			}else{
+				return
+			}
+			this.$api('/Execute.do',param).then(function(r){
+				console.log(JSON.stringify(r));
+			})
+		},
+		actionSheet: function(){
+	      this.sheetVisible = true;  
+	    },  
+	    getCamera: function(){  
+	      console.log("拍照")
+	    },  
+	    getLibrary: function(){  
+	      console.log("打开相册")  
+	    },
+	    descInput:function(){
+	        var txtVal = this.content.length;
+	        this.remnant = 120 - txtVal;
+	    }
+	}
+}
 </script>
 
 <style>
@@ -81,5 +136,14 @@
 	height:3.48rem;
 	opacity: 0;
 	filter:Alpha(opacity=0);	
+}
+.upload-container-remnant{
+	width:100%;
+	height:1.36rem;
+	text-align: right;
+	font-size:0.44rem;
+	color:#999;
+	line-height:1.36rem;
+	padding:0 0.5rem;
 }
 </style>

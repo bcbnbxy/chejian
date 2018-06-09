@@ -70,3 +70,6 @@ td,th{padding:0}
 .v-link-active{
 	border-top:1px solid #0061ff !important;
 }
+.submit  .mint-button--default{
+	background:#369cf9 !important;
+}

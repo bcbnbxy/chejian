@@ -1,7 +1,6 @@
 
 // 引用axios
 var axios = require('axios')
-import {Loading } from 'element-ui'
 import store from '../store'
 import qs from 'qs'
 import {buildSign} from '../assets/script/until.js'
