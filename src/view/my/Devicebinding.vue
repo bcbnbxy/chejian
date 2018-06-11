@@ -5,21 +5,57 @@
 			<span>设备绑定</span>
 			<span></span>
 		</header>
-		<div class="scan-bind">
+		<div class="scan-bind" @click="startRecognize()">
 			<span>扫描绑定</span>
 			<i class="iconfont icon-arrow-right-copy-copy-copy"></i>
 		</div>
 		<div class="shibiema">
-			<input type="text" placeholder="请输入16位设备识别码"/>
+			<input type="text" placeholder="请输入16位设备识别码" v-model="devicenum"/>
 			<p>注：设备识别码及设备二维码在设备底部</p>
 		</div>
 		<div class="submit">
 			<button>确定</button>
 		</div>
+		<div id= "bcid" v-show="bcidflag"></div>
 	</div>
 </template>
 
 <script>
+var scan=null;
+export default {
+	data (){
+		return {
+			bcidflag:false,
+			devicenum:''
+		}
+	},
+	methods:{
+		startRecognize:function(){
+			this.bcidflag=true;
+			scan = new plus.barcode.Barcode('bcid');
+			scan.start();			
+			scan.onmarked=this.onmarked;
+		},
+		onmarked:function( type, result){ //扫描二维码成功回调函数
+			var text = '未知: ';
+			switch(type){
+				case plus.barcode.QR:
+				text = 'QR: ';
+				break;
+				case plus.barcode.EAN13:
+				text = 'EAN13: ';
+				break;
+				case plus.barcode.EAN8:
+				text = 'EAN8: ';
+				break;
+			}
+			scan.cancel();
+			scan.close();
+			this.bcidflag=false;
+			this.devicenum=result;
+		}
+	}
+}
 </script>
 
 <style scoped>
@@ -86,5 +122,13 @@
 	font-size:0.48rem;
 	color:#fff;
 	border-radius: 5px;
+}
+#bcid{
+	width:100vw;
+	height:100vh;
+	background:rgba(0,0,0,.3);
+	position: fixed;
+	top:0;
+	left:0;
 }
 </style>

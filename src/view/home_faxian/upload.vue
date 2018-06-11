@@ -27,7 +27,7 @@ export default{
 			remnant: 120,
 			actions: [{  
 		        name: '拍照',  
-		        method : this.getCamera// 调用methods中的函数  
+		        method : this.captureImage// 调用methods中的函数  
 		      }, {  
 		        name: '从相册中选择',   
 		        method : this.getLibrary// 调用methods中的函数  
@@ -60,17 +60,35 @@ export default{
 		},
 		actionSheet: function(){
 	      this.sheetVisible = true;  
-	    },  
-	    getCamera: function(){  
-	      console.log("拍照")
-	    },  
+	   },  
 	    getLibrary: function(){  
 	      console.log("打开相册")  
 	    },
 	    descInput:function(){
 	        var txtVal = this.content.length;
 	        this.remnant = 120 - txtVal;
-	    }
+	    },
+	    captureImage:function(){ //调用手机摄像头进行拍照
+			var cmr = plus.camera.getCamera();
+			var res = cmr.supportedImageResolutions[0];
+			var fmt = cmr.supportedImageFormats[0];
+			cmr.captureImage(function(path) {
+					savePicture(path);
+					plus.io.resolveLocalFileSystemURL(path, function(entry) {
+						var locaURL = entry.toLocalURL()
+//						createUpload(locaURL,"image")
+					})
+				},
+				function(error) {
+					alert("Capture image failed: " + error.message);
+				}, {
+					resolution: res,
+					format: fmt
+				});	
+		},
+		savePicture :function (path) { //保存图片路径
+			plus.gallery.save(path, function() {});
+		}
 	}
 }
 </script>

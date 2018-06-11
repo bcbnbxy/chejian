@@ -9,6 +9,8 @@ import '@/assets/style/font/iconfont.js'
 import store from './store/index.js'
 import MintUI from 'mint-ui'
 import 'mint-ui/lib/style.css'
+import Es6Promise from 'es6-promise';
+Es6Promise.polyfill();
 Vue.use(MintUI);
 // 引用API文件
 import api from './api/index.js'

@@ -122,6 +122,7 @@ export default {
 			}else{
 				var that=this;
 				this.$api('/Execute.do',{action:'changePassword',userseq:JSON.parse(localStorage.getItem('loginInfo')).userseq,oldpwd:this.oldpassword,password:this.newpassword,confirmpwd:this.suerpassword}).then(function(r){
+					console.log(JSON.stringify(r));
 					if(r.errorCode=='0'){
 						that.$toast({
 				          message: '密码修改成功',

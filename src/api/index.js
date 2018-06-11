@@ -81,8 +81,10 @@ axios.interceptors.request.use(config => {
    return new Promise((resolve,reject) => {
      axios.post(url,data)
       .then(response => {
+      	alert(response);
         resolve(response.data);
       },err => {
+      	alert(err)
         reject(err)
       })
    })
